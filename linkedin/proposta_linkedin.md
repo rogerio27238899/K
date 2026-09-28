@@ -35,7 +35,7 @@ Na V4 Company, fui Analista Financeiro Júnior de janeiro a setembro de 2026. Fi
 
 Na Nunes&Lucato, fui Gestor de Projetos. Conduzi parcerias de coleta de resíduo têxtil e projetos de upcycling para Midea, Carrier e Santista S.A., com orçamento de R$ 150 mil. Na IME Jr, como Analista Financeiro, construí modelos em Python e SQL com bases de mais de 1,2 milhão de registros.
 
-No Clube de Consultoria da Unicamp, fui Diretor de Gestão de Pessoas. Dei aulas de Finanças e resolução de cases para mais de 100 alunos no Prep4Consulting e conduzi simulações de entrevista no Getting the Job.
+No Clube de Consultoria da Unicamp, fui Diretor de Gestão de Pessoas. Dei aulas de Finanças e Case Interview em três edições do Prep4Consulting, para mais de 100 alunos, conduzi o processo seletivo do clube e fiz simulações de entrevista no Getting the Job.
 
 Tenho a CPA-20 (ANBIMA) e sou candidato ao Nível I do CFA. Uso Excel/VBA, Python, SQL e Power BI. Falo português (nativo), inglês (avançado) e espanhol (intermediário).
 
@@ -51,9 +51,9 @@ Tenho a CPA-20 (ANBIMA) e sou candidato ao Nível I do CFA. Uso Excel/VBA, Pytho
 - Supervisionei o projeto Bom Retiro Recicla: mais de 40 toneladas por mês de resíduo têxtil encaminhadas para reciclagem.
 
 **Clube de Consultoria da Unicamp – Diretor de Gestão de Pessoas (ago/2025 – set/2026) · Campinas, SP**
-- Fui instrutor de Finanças e resolução de cases no Prep4Consulting, para mais de 100 alunos.
+- Dei aulas de Finanças e Case Interview em três edições do Prep4Consulting, para mais de 100 alunos, e orientei os membros mais novos sobre como responder às dúvidas e aos comentários dos participantes.
+- Conduzi o processo seletivo do clube em todas as etapas e escolhi os candidatos para o programa trainee, que segue um framework de evolução do membro até a apresentação de um case para uma banca avaliadora.
 - Conduzi simulações de entrevista com devolutiva e revisões de currículo no Getting the Job.
-- Ajudei a divulgar o XRAY 2025, que teve 626 respostas em duas semanas, um recorde.
 
 **IME Jr – Analista Financeiro, Departamento Jurídico-Financeiro (ago/2024 – dez/2025) · São Paulo, SP**
 - Estruturei modelos preditivos em Python e extração de dados em SQL para projetos de Saúde e Transporte, com bases de mais de 1,2 milhão de registros.

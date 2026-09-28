@@ -26,8 +26,9 @@ SECOES = [
           "Econometria, Estatística, Derivativos e Gestão de Portfólio, Matemática Financeira, "
           "Mercado de Capitais e Métodos Computacionais."]),
         ("Agostiniano Mendel / Calvert Academy", "São Paulo, SP",
-         "Ensino Médio com currículo internacional norte-americano (AP Economics e AP Statistics), "
-         "com ênfase em Economia, Tecnologia, Finanças e Matemática", "", []),
+         "Ensino Médio", "",
+         ["<b>Calvert Academy:</b> currículo internacional norte-americano com ênfase em Economia, "
+          "Tecnologia, Finanças e Matemática, incluindo as disciplinas AP Economics e AP Statistics."]),
     ]),
     ("EXPERIÊNCIA PROFISSIONAL", [
         ("V4 Company", "Campinas, SP", "Analista Financeiro Júnior", "Janeiro 2026 – Setembro 2026", [
@@ -58,14 +59,15 @@ SECOES = [
     ("ATIVIDADES EXTRACURRICULARES E LIDERANÇA", [
         ("Clube de Consultoria da Unicamp", "Campinas, SP", "Diretor de Gestão de Pessoas",
          "Agosto 2025 – Setembro 2026", [
-            "Atuei como instrutor do programa Prep4Consulting, ministrando aulas de Finanças e de resolução de "
-            "<i>cases</i> para mais de 100 alunos e capacitando os participantes na estruturação e na resolução "
-            "dos problemas exigidos nos processos seletivos de consultoria.",
+            "Atuei como instrutor em três edições do programa Prep4Consulting, ministrando aulas de Finanças e "
+            "<i>Case Interview</i> para mais de 100 alunos e orientando os membros mais novos do clube sobre como "
+            "responder às dúvidas e aos comentários adicionais dos participantes.",
+            "Conduzi o processo seletivo do clube, atuando ativamente em todas as etapas e escolhendo os melhores "
+            "candidatos para o programa <i>trainee</i>, que segue um <i>framework</i> de evolução do membro até a "
+            "apresentação de um <i>case</i> para uma banca avaliadora.",
             "Conduzi as sessões de preparação do programa <i>Getting the Job</i>, rodando simulações de entrevista "
             "com devolutiva de desempenho e revisões estratégicas de currículo com os candidatos que disputavam "
             "vagas nas principais consultorias do mercado.",
-            "Colaborei na divulgação do XRAY 2025, censo da Unicamp voltado a mapear o interesse dos alunos pelo "
-            "mercado de consultoria, levantamento que alcançou o recorde de 626 respostas em apenas duas semanas.",
         ]),
         ("IME Jr", "São Paulo, SP", "Analista Financeiro, Departamento Jurídico-Financeiro",
          "Agosto 2024 – Dezembro 2025", [
