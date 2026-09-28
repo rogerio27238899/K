@@ -50,7 +50,8 @@
 10. Capacidade e logística (1.000 t/mês, 14 t por carga, ~72 cargas/mês, energia/mês)
 11. Ficha técnica do produto
 12. Conformidade e rastreabilidade
-13. Próximos passos (amostra → teste de queima → licenciamento → piloto → contrato) + pedido de cotação em R$/t
-14. Encerramento
+13. Amostras: 5 kg picotado, 5 kg moído, 5 kg pedra-brita (com fotos)
+14. Próximos passos (amostra → teste de queima → licenciamento → piloto → contrato) + pedido de cotação em R$/t
+15. Encerramento
 
 **Ícones:** ícones de linha finos, no estilo da apresentação original, na cor de cada card: cards lilás com o ícone no topo, ícones dentro dos círculos do fluxo e ao lado dos números. Vêm do conjunto Lucide (licença ISC, uso comercial livre, sem atribuição obrigatória).

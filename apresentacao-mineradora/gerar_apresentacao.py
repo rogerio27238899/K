@@ -452,10 +452,31 @@ text(s, 0.83, 5.0, 11.6, 1.4, [[("Rastreabilidade completa: ", True, ROYAL), ("d
      size=15, line_spacing=1.4)
 footer(s)
 
+# ---------- 11b. AMOSTRAS ----------
+s = white_slide()
+header(s, "Amostras para avaliação", [("Enviaremos ", False), ("15 kg de amostras", True), (" em três formatos", False)],
+       sub="5 kg de cada apresentação do material, para análise e teste de queima na sua unidade.")
+amostras = [(ROYAL, "scissors", "399170.jpg", "Picotado", "Fragmentos de tecido cortados, prontos para alimentação direta."),
+            (BLUE, "layers", "399171.jpg", "Moído", "Fibra triturada fina, homogênea e de fácil dosagem."),
+            (GREEN, "mountain", "399172.jpg", "Pedra-brita", "Material compactado em blocos, mais denso para transporte e estocagem.")]
+for i, (c, ic, foto, t, b) in enumerate(amostras):
+    x = 0.83 + i * 3.95
+    img = fit(os.path.join(ARQ, foto), os.path.join(ASSETS, f"amostra_{i + 1}.jpg"), (1000, 560))
+    s.shapes.add_picture(img, Inches(x), Inches(2.2), Inches(3.75), Inches(2.1))
+    rect(s, x, 4.3, 3.75, 1.85, CARD)
+    rect(s, x, 4.3, 3.75, 0.06, c)
+    icon(s, ic, x + 0.3, 4.58, 0.4, c)
+    text(s, x + 0.85, 4.55, 1.9, 0.45, [[(t, True)]], size=14, anchor=MSO_ANCHOR.MIDDLE)
+    text(s, x + 2.55, 4.5, 0.95, 0.55, [[("5", True, c, 26), (" kg", False, c, 12)]], align=PP_ALIGN.RIGHT)
+    text(s, x + 0.3, 5.2, 3.15, 0.8, b, size=10, color=GRAY)
+text(s, 0.83, 6.3, 11.6, 0.35, "Amostras identificadas por lote e acompanhadas da ficha técnica do material.",
+     size=9, color=GRAY)
+footer(s)
+
 # ---------- 12. PRÓXIMOS PASSOS ----------
 s = white_slide()
 header(s, "Implantação", [("Próximos ", False), ("passos", True)])
-nxt = [("send", "Envio de amostra", "Material representativo para análise da mineradora."),
+nxt = [("send", "Envio de amostras", "5 kg de picotado, 5 kg de moído e 5 kg de pedra-brita."),
        ("flame", "Teste de queima", "Ensaio controlado no equipamento de destino."),
        ("clipboard-check", "Licenciamento", "Adequação da licença para uso do combustível alternativo."),
        ("play", "Fornecimento piloto", "Lotes iniciais com monitoramento de desempenho."),
