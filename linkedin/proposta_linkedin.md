@@ -57,7 +57,7 @@ Tenho a CPA-20 (ANBIMA) e sou candidato ao Nível I do CFA. Uso Excel/VBA, Pytho
 
 **IME Jr – Analista Financeiro, Departamento Jurídico-Financeiro (ago/2024 – dez/2025) · São Paulo, SP**
 - Estruturei modelos preditivos em Python e extração de dados em SQL para projetos de Saúde e Transporte, com bases de mais de 1,2 milhão de registros.
-- Fiz a análise SWOT da empresa júnior e analisei as despesas operacionais em Excel, o que gerou economia mensal recorrente.
+- Analisei as despesas operacionais em Excel e identifiquei as linhas de custo com maior potencial de redução, o que gerou economia mensal recorrente.
 - Padronizei o arquivo financeiro e jurídico do departamento em uma estrutura única de pastas, com convenção de nomes.
 
 ### Competências (fixe as 5 primeiras)

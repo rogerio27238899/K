@@ -73,9 +73,8 @@ SECOES = [
          "Agosto 2024 – Dezembro 2025", [
             "Estruturei modelos preditivos em Python e rotinas de extração de dados em SQL para projetos nos "
             "setores de Saúde e Transporte, tratando e analisando bases com mais de 1,2 milhão de registros.",
-            "Conduzi a análise SWOT da empresa júnior, identificando a captação de recursos como principal ponto "
-            "forte, e analisei as despesas operacionais em Excel para apontar as linhas de custo com maior "
-            "potencial de redução, o que gerou economia mensal recorrente.",
+            "Analisei as despesas operacionais da empresa júnior em Excel, organizando os gastos por categoria e "
+            "identificando as linhas de custo com maior potencial de redução, o que gerou economia mensal recorrente.",
             "Padronizei o arquivo financeiro e jurídico do departamento, reunindo fluxo de caixa, orçamentos, "
             "contratos e notas fiscais em uma estrutura única de pastas, com convenção de nomes que tornou cada "
             "documento localizável por período e por contraparte.",
