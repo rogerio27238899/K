@@ -166,15 +166,19 @@ def dark_bg(slide, img):
         ln.line.width = Pt(0.5)
 
 
-def card(slide, x, y, w, h, bar, title, body, num=None, title_size=13):
+def card(slide, x, y, w, h, bar, title, body, num=None, title_size=13, title_lines=1):
+    """title_lines: linhas reservadas ao título. Use 2 quando algum título da fileira quebra,
+    para o texto não encostar no título e ficar alinhado em todos os cards."""
     rect(slide, x, y, w, h, WHITE, BORDER)
     rect(slide, x, y, w, 0.06, bar)
     ty = y + 0.3
     if num:
         text(slide, x + 0.3, ty, 1, 0.4, num, size=18, color=bar)
         ty += 0.5
-    text(slide, x + 0.3, ty, w - 0.6, 0.4, [[(title, True)]], size=title_size, color=TEXT)
-    text(slide, x + 0.3, ty + 0.45, w - 0.6, h - (ty - y) - 0.55, body, size=10, color=GRAY)
+    title_h = 0.3 + 0.25 * (title_lines - 1)
+    text(slide, x + 0.3, ty, w - 0.6, title_h, [[(title, True)]], size=title_size, color=TEXT, line_spacing=1.05)
+    by = ty + title_h + 0.15
+    text(slide, x + 0.3, by, w - 0.6, h - (by - y) - 0.2, body, size=10, color=GRAY)
 
 
 # =====================================================================
@@ -417,7 +421,7 @@ conf = [(ROYAL, "MTR", "Manifesto de Transporte de Resíduos emitido em cada col
         (ROYAL, "Controle por lote", "Registro fotográfico, pesagem e identificação de cada lote."),
         (GREEN, "Destinação comprovada", "Certificado de destinação final ambientalmente adequada.")]
 for i, (c, t, b) in enumerate(conf):
-    card(s, 0.83 + i * 2.97, 1.8, 2.75, 2.5, c, t, b)
+    card(s, 0.83 + i * 2.97, 1.8, 2.75, 2.5, c, t, b, title_lines=2)
 hline(s, 0.83, 4.7, 11.67)
 text(s, 0.83, 4.9, 11.6, 1.4, [[("Rastreabilidade completa: ", True, ROYAL), ("da indústria geradora ao forno da mineradora.", False, TEXT)],
                                [("Apoio técnico à mineradora nas etapas de licenciamento para uso de combustível derivado de "
