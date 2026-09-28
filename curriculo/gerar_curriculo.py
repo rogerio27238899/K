@@ -28,26 +28,29 @@ SECOES = [
         ("Agostiniano Mendel / Calvert Academy", "São Paulo, SP",
          "Ensino Médio", "",
          ["<b>Calvert Academy:</b> currículo internacional norte-americano com ênfase em Economia, "
-          "Tecnologia, Finanças e Matemática, incluindo as disciplinas AP Economics e AP Statistics."]),
+          "Tecnologia, Finanças e Matemática, incluindo as disciplinas AP Economics, AP Statistics, "
+          "<i>Introduction to Careers in Finance</i> e <i>Fundamentals of Programming</i>."]),
     ]),
     ("EXPERIÊNCIA PROFISSIONAL", [
         ("V4 Company", "Campinas, SP", "Analista Financeiro Júnior", "Janeiro 2026 – Setembro 2026", [
             "Conduzi as análises mensais de DRE, a modelagem financeira e as projeções de fluxo de caixa da "
-            "empresa, acompanhando receitas, custos e margens de cada período e consolidando os resultados em "
-            "relatórios gerenciais que a diretoria utilizava como base para decidir a alocação de um orçamento "
-            "anual superior a R$ 5M.",
+            "empresa, acompanhando receitas, custos e margens de cada período, comparando o realizado com o "
+            "projetado e consolidando os resultados em relatórios gerenciais que a diretoria utilizava como base "
+            "para decidir a alocação de um orçamento anual superior a R$ 5M.",
             "Administrei o fluxo de caixa, a conciliação bancária e as rotinas de contas a pagar e a receber, "
             "com volume superior a 400 transações mensais, e implantei um controle diário de vencimentos que "
-            "antecipou a cobrança dos recebíveis e reduziu a inadimplência da carteira.",
+            "antecipou a cobrança dos recebíveis, reduziu a inadimplência da carteira e deu à gestão uma visão "
+            "diária e confiável da posição de caixa da empresa.",
             "Reestruturei as rotinas de fechamento mensal e a documentação dos controles internos, reduzindo a "
-            "exposição a riscos operacionais e deixando cada lançamento rastreável até o comprovante de origem, "
-            "formando a base documental que sustentou as auditorias e os processos de <i>Due Diligence</i> da empresa.",
+            "exposição a riscos operacionais, agilizando o fechamento e deixando cada lançamento rastreável até o "
+            "comprovante de origem, formando a base documental que sustentou as auditorias e os processos de "
+            "<i>Due Diligence</i> da empresa.",
         ]),
         ("Nunes&amp;Lucato", "São Paulo, SP", "Gestor de Projetos", "Fevereiro 2023 – Dezembro 2025", [
             "Conduzi a prospecção e a negociação das parcerias de coleta com a NK Store e a Track&amp;Field, "
-            "garantindo a destinação integral do resíduo têxtil recebido e assegurando fluxo contínuo de "
-            "matéria-prima ao longo de 2023 e 2024, período em que a receita e o volume do negócio cresceram "
-            "de forma sustentada.",
+            "mantidas por mais de um ano, garantindo a destinação integral do resíduo têxtil recebido e "
+            "assegurando fluxo contínuo de matéria-prima ao longo de 2023 e 2024, período em que a receita e o "
+            "volume do negócio cresceram de forma sustentada.",
             "Gerenciei projetos de <i>upcycling</i> para a Midea, a Carrier e a Santista S.A., administrando um "
             "orçamento de R$ 150 mil, coordenando a produção e a entrega de mais de 2.500 itens às marcas como "
             "parte de suas iniciativas de sustentabilidade.",
@@ -60,11 +63,13 @@ SECOES = [
         ("Clube de Consultoria da Unicamp", "Campinas, SP", "Diretor de Gestão de Pessoas",
          "Agosto 2025 – Setembro 2026", [
             "Atuei como instrutor em três edições do programa Prep4Consulting, ministrando aulas de Finanças e "
-            "<i>Case Interview</i> para mais de 80 alunos por edição e orientando os membros mais novos do clube sobre como "
-            "responder às dúvidas e aos comentários adicionais dos participantes.",
-            "Conduzi o processo seletivo do clube, atuando ativamente em todas as etapas e escolhendo os melhores "
-            "candidatos para o programa <i>trainee</i>, que segue um <i>framework</i> de evolução do membro até a "
-            "apresentação de um <i>case</i> para uma banca avaliadora.",
+            "<i>Case Interview</i> para mais de 80 alunos por edição, capacitando-os na estruturação e "
+            "resolução dos problemas exigidos nos processos seletivos de consultoria, e orientei os membros mais "
+            "novos do clube a responder às dúvidas e aos comentários adicionais dos alunos.",
+            "Conduzi o processo seletivo do clube, atuando ativamente em todas as etapas e avaliando o desempenho "
+            "dos candidatos em cada fase para escolher os melhores, que ingressam no programa <i>trainee</i>, um "
+            "<i>framework</i> de evolução do membro que culmina na apresentação de um <i>case</i> para uma banca "
+            "avaliadora.",
             "Conduzi as sessões de preparação do programa <i>Getting the Job</i>, rodando simulações de entrevista "
             "com devolutiva de desempenho e revisões estratégicas de currículo com os candidatos que disputavam "
             "vagas nas principais consultorias do mercado.",
@@ -74,10 +79,11 @@ SECOES = [
             "Estruturei modelos preditivos em Python e rotinas de extração de dados em SQL para projetos nos "
             "setores de Saúde e Transporte, tratando e analisando bases com mais de 1,2 milhão de registros.",
             "Analisei as despesas operacionais da empresa júnior em Excel, organizando os gastos por categoria e "
-            "identificando as linhas de custo com maior potencial de redução, o que gerou economia mensal recorrente.",
+            "identificando as linhas de custo com maior potencial de redução, o que gerou economia mensal "
+            "recorrente e deu mais previsibilidade ao orçamento.",
             "Padronizei o arquivo financeiro e jurídico do departamento, reunindo fluxo de caixa, orçamentos, "
-            "contratos e notas fiscais em uma estrutura única de pastas, com convenção de nomes que tornou cada "
-            "documento localizável por período e por contraparte.",
+            "contratos e notas fiscais em uma estrutura única de mais de 12 pastas, com convenção de nomes que "
+            "tornou cada documento localizável por período e por contraparte e padronizou o ambiente digital.",
         ]),
     ]),
 ]
