@@ -24,6 +24,10 @@
 - Valores de outros combustíveis devem ser marcados como **referências típicas**.
 - Uso na mineradora sempre como **substituição parcial**, sujeita a teste de queima e licenciamento ambiental (CETESB / Res. SIMA 47/2020 para CDR).
 - Embalagem: **sacos de até 30 kg**.
+- Tudo em nome da **Nunes & Lucato**. Nenhum dado do solicitante do laudo aparece nos slides nem nos metadados do arquivo.
+- O material é uma **mistura de fibras**, e é isso que explica o PCI alto. A composição é padronizada por lote.
+- Capacidade: **1.000 t/mês**, em cargas de 14 t (~72 por mês), saindo da base em São Paulo/SP (Belenzinho). Energia ≈ 41.700 GJ/mês.
+- Não mostrar frete, custos nem margens ao cliente. Pedir **cotação formal em R$/t**. A análise interna fica em `analise-comercial-interna.md`.
 
 **Identidade visual (copiar da apresentação da Nunes & Lucato):**
 - Paleta: fundo escuro `#0B0A1F → #1E1D72` (capa e encerramento), azul-royal `#3432C9` (cor principal), azul `#1E86C9`, verde `#12A87B` (destaques), cards `#F4F5FC`, texto `#1B1B2F` / cinza `#6B6B80`.
@@ -43,7 +47,8 @@
 7. Aplicações na mineração (pelotização, calcinação, secagem, caldeiras)
 8. Benefícios para a mineradora
 9. Fluxo de preparação (coleta → triagem → picotagem → ensacamento 30 kg → expedição com MTR)
-10. Ficha técnica do produto
-11. Conformidade e rastreabilidade
-12. Próximos passos (amostra → teste de queima → licenciamento → piloto → contrato)
-13. Encerramento
+10. Capacidade e logística (1.000 t/mês, 14 t por carga, ~72 cargas/mês, energia/mês)
+11. Ficha técnica do produto
+12. Conformidade e rastreabilidade
+13. Próximos passos (amostra → teste de queima → licenciamento → piloto → contrato) + pedido de cotação em R$/t
+14. Encerramento

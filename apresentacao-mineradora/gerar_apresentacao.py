@@ -223,7 +223,7 @@ for i, f in enumerate((f1, f2, f3)):
     s.shapes.add_picture(f, Inches(0.83 + i * 2.35), Inches(1.75), Inches(2.2), Inches(2.75))
 text(s, 0.83, 4.65, 7, 0.3, "Registro fotográfico do material ensacado e estocado em lotes.", size=9, color=GRAY)
 items = [("Origem", "Aparas e sobras de corte da indústria de confecção: material limpo, seco e sem uso prévio."),
-         ("Composição", "Mix de fibras (algodão, sintéticas e mistas), com triagem para retirar contaminantes."),
+         ("Composição", "Mistura de aparas de fibras naturais e sintéticas, padronizada por lote para manter o alto PCI."),
          ("Forma", "Picotado em fragmentos, o que facilita dosagem e alimentação contínua."),
          ("Embalagem", "Sacos de até 30 kg, com manuseio simples e estocagem organizada por lote.")]
 y = 1.75
@@ -252,7 +252,7 @@ hline(s, 0.83, 5.35, 11.67)
 text(s, 0.83, 5.5, 11.6, 0.4, [[("PCS: 10.040,0 kcal/kg  ·  ", False, TEXT), ("Conclusão do laudo: ", True, ROYAL),
                                ("os parâmetros de PCI e cloro atendem aos limites da Resolução SIMA nº 145/2021 (art. 5º).", False, TEXT)]],
      size=12)
-text(s, 0.83, 6.0, 11.6, 0.4, "Resultado válido para a amostra analisada. Laudo completo disponível mediante solicitação.",
+text(s, 0.83, 6.0, 11.6, 0.4, "Resultado da amostra analisada. O alto PCI vem da mistura de fibras, e a composição é mantida em todos os lotes fornecidos.",
      size=9, color=GRAY)
 footer(s)
 
@@ -351,10 +351,33 @@ text(s, 1.15, 4.9, 11.1, 1.2, [[("Estrutura própria de preparação", True, ROY
      size=12, line_spacing=1.3)
 footer(s)
 
+# ---------- 9b. CAPACIDADE E LOGÍSTICA ----------
+s = white_slide()
+header(s, "Capacidade e logística", [("Fornecimento recorrente de ", False), ("1.000 toneladas por mês", True)],
+       sub="Base operacional em São Paulo/SP (Belenzinho), com entrega programada na unidade do cliente.")
+cap = [(ROYAL, "1.000", "t/mês", "Volume disponível", "Fornecimento contínuo e programado"),
+       (BLUE, "14", "t", "Por carga (truck)", "Sacos de até 30 kg, carga padronizada"),
+       (GREEN, "~72", "cargas/mês", "Entregas mensais", "Cerca de 3 cargas por dia útil"),
+       (ROYAL, "~41.700", "GJ/mês", "Energia disponível", "≈ 9,95 bilhões de kcal/mês")]
+for i, (c, v, u, t, b) in enumerate(cap):
+    x = 0.83 + i * 2.97
+    rect(s, x, 2.3, 2.75, 2.6, CARD)
+    rect(s, x, 2.3, 2.75, 0.06, c)
+    text(s, x + 0.3, 2.6, 2.4, 0.8, [[(v, True, c, 30), (" " + u, False, c, 11)]])
+    text(s, x + 0.3, 3.55, 2.3, 0.4, [[(t, True)]], size=12)
+    text(s, x + 0.3, 3.95, 2.3, 0.8, b, size=10, color=GRAY)
+hline(s, 0.83, 5.25, 11.67)
+text(s, 0.83, 5.45, 11.6, 0.5, [[("Volume recorrente e escala ", True, ROYAL),
+                                ("para substituir parte relevante do combustível do processo, com cronograma de "
+                                 "entregas combinado com a operação.", False, TEXT)]], size=13)
+text(s, 0.83, 6.1, 11.6, 0.35, "Energia calculada pelo PCI em base seca do laudo (9.953,8 kcal/kg ≈ 41,7 MJ/kg).",
+     size=9, color=GRAY)
+footer(s)
+
 # ---------- 10. FICHA TÉCNICA ----------
 s = white_slide()
 header(s, "Especificação", [("Ficha técnica do ", False), ("produto", True)])
-rows = [("Produto", "Resíduo têxtil pós-industrial picotado"),
+rows = [("Produto", "Resíduo têxtil pós-industrial picotado (mistura de fibras)"),
         ("Aplicação", "Combustível alternativo sólido (substituição parcial)"),
         ("PCI (base seca)", "9.953,8 kcal/kg"),
         ("PCS", "10.040,0 kcal/kg"),
@@ -362,8 +385,9 @@ rows = [("Produto", "Resíduo têxtil pós-industrial picotado"),
         ("Umidade  /  Sólidos", "3,77 %  /  96,23 %"),
         ("Granulometria", "Picotado, com dimensão ajustável à especificação do cliente"),
         ("Embalagem", "Sacos de até 30 kg"),
+        ("Capacidade", "Até 1.000 t/mês, em cargas de 14 t"),
         ("Documentação", "Laudo analítico, MTR e certificado de destinação por lote")]
-tbl = s.shapes.add_table(len(rows), 2, Inches(0.83), Inches(1.75), Inches(11.67), Inches(4.6)).table
+tbl = s.shapes.add_table(len(rows), 2, Inches(0.83), Inches(1.7), Inches(11.67), Inches(4.8)).table
 tbl.columns[0].width = Inches(3.6)
 tbl.columns[1].width = Inches(8.07)
 for r, (k, v) in enumerate(rows):
@@ -417,9 +441,9 @@ for i, (t, b) in enumerate(nxt):
     text(s, x + 0.25, 2.3, 1.5, 0.5, f"{i + 1:02d}", size=24, color=c)
     text(s, x + 0.25, 3.0, 1.8, 0.6, [[(t, True)]], size=12)
     text(s, x + 0.25, 3.65, 1.8, 1.2, b, size=10, color=GRAY)
-text(s, 0.83, 5.35, 11.6, 0.8, [[("Condições comerciais ", True, ROYAL),
-                                ("(preço, volume mensal e frete) a serem definidas em reunião, conforme a demanda "
-                                 "e a especificação técnica da operação.", False, GRAY)]], size=12)
+text(s, 0.83, 5.35, 11.6, 0.8, [[("Solicitamos cotação formal em R$/t ", True, ROYAL),
+                                ("para o fornecimento de 1.000 t/mês com entrega programada na unidade do cliente. "
+                                 "As condições finais serão definidas em reunião.", False, GRAY)]], size=12)
 footer(s)
 
 # ---------- 13. ENCERRAMENTO ----------
@@ -439,6 +463,12 @@ for sl in prs.slides:
     for shp in sl.shapes:
         for st in shp._element.findall("{http://schemas.openxmlformats.org/presentationml/2006/main}style"):
             shp._element.remove(st)
+
+cp = prs.core_properties
+cp.author = cp.last_modified_by = "Nunes & Lucato"
+cp.title = "Resíduo têxtil como combustível alternativo para a mineração"
+cp.subject = "Proposta comercial Nunes & Lucato"
+cp.comments = cp.keywords = cp.category = ""
 
 out = os.path.join(OUT_DIR, "Nunes_Lucato_Residuo_Textil_Mineradora.pptx")
 prs.save(out)
