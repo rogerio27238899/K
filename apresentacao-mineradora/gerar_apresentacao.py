@@ -458,7 +458,7 @@ header(s, "Amostras para avaliação", [("Enviaremos ", False), ("15 kg de amost
        sub="5 kg de cada apresentação do material, para análise e teste de queima na sua unidade.")
 amostras = [(ROYAL, "scissors", "399170.jpg", "Picotado", "Fragmentos de tecido cortados, prontos para alimentação direta."),
             (BLUE, "layers", "399171.jpg", "Moído", "Fibra triturada fina, homogênea e de fácil dosagem."),
-            (GREEN, "mountain", "399172.jpg", "Pedra-brita", "Material compactado em blocos, mais denso para transporte e estocagem.")]
+            (GREEN, "mountain", "399174.jpg", "Pedra-brita", "Grânulos pequenos e uniformes, densos e de fácil dosagem e estocagem.")]
 for i, (c, ic, foto, t, b) in enumerate(amostras):
     x = 0.83 + i * 3.95
     img = fit(os.path.join(ARQ, foto), os.path.join(ASSETS, f"amostra_{i + 1}.jpg"), (1000, 560))
