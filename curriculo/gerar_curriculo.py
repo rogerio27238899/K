@@ -60,7 +60,7 @@ SECOES = [
         ("Clube de Consultoria da Unicamp", "Campinas, SP", "Diretor de Gestão de Pessoas",
          "Agosto 2025 – Setembro 2026", [
             "Atuei como instrutor em três edições do programa Prep4Consulting, ministrando aulas de Finanças e "
-            "<i>Case Interview</i> para mais de 100 alunos e orientando os membros mais novos do clube sobre como "
+            "<i>Case Interview</i> para mais de 80 alunos por edição e orientando os membros mais novos do clube sobre como "
             "responder às dúvidas e aos comentários adicionais dos participantes.",
             "Conduzi o processo seletivo do clube, atuando ativamente em todas as etapas e escolhendo os melhores "
             "candidatos para o programa <i>trainee</i>, que segue um <i>framework</i> de evolução do membro até a "
