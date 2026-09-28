@@ -166,12 +166,27 @@ def dark_bg(slide, img):
         ln.line.width = Pt(0.5)
 
 
-def card(slide, x, y, w, h, bar, title, body, num=None, title_size=13, title_lines=1):
+ICONS = os.path.join(ASSETS, "icons")  # ícones de linha Lucide (licença ISC), renderizados nas cores da marca
+
+
+def icon(slide, name, x, y, size=0.42, color=None):
+    """Ícone de linha no estilo da apresentação original. color: ROYAL, BLUE, GREEN ou WHITE."""
+    tone = {GREEN: "green", WHITE: "white", BLUE: "blue"}.get(color, "royal")
+    slide.shapes.add_picture(os.path.join(ICONS, f"{name}_{tone}.png"), Inches(x), Inches(y), Inches(size), Inches(size))
+
+
+def card(slide, x, y, w, h, bar, title, body, num=None, title_size=13, title_lines=1, ico=None):
     """title_lines: linhas reservadas ao título. Use 2 quando algum título da fileira quebra,
-    para o texto não encostar no título e ficar alinhado em todos os cards."""
-    rect(slide, x, y, w, h, WHITE, BORDER)
-    rect(slide, x, y, w, 0.06, bar)
-    ty = y + 0.3
+    para o texto não encostar no título e ficar alinhado em todos os cards.
+    ico: com ícone, o card segue o estilo da original (fundo lilás, sem borda, ícone no topo)."""
+    if ico:
+        rect(slide, x, y, w, h, CARD)
+        icon(slide, ico, x + 0.3, y + 0.32, 0.42, bar)
+        ty = y + 0.32 + 0.42 + 0.25
+    else:
+        rect(slide, x, y, w, h, WHITE, BORDER)
+        rect(slide, x, y, w, 0.06, bar)
+        ty = y + 0.3
     if num:
         text(slide, x + 0.3, ty, 1, 0.4, num, size=18, color=bar)
         ty += 0.5
@@ -212,12 +227,12 @@ hline(s, 0.83, 3.25, 6.3)
 text(s, 0.83, 3.4, 6.5, 0.4, [[("Do resíduo ao combustível", False, ROYAL), ("  ·  com respaldo documental", False, TEXT)]],
      size=14)
 s.shapes.add_picture(f_wide, Inches(7.55), Inches(1.75), Inches(4.95), Inches(2.3))
-cards = [(ROYAL, "Coleta e transporte", "Com emissão de MTR, dando respaldo legal à logística."),
-         (ROYAL, "Triagem técnica", "Separação por composição e retirada de contaminantes."),
-         (ROYAL, "Picotagem", "Adequação da granulometria à especificação do forno do cliente."),
-         (GREEN, "Fornecimento", "Lotes padronizados, ensacados e rastreados até a entrega.")]
-for i, (c, t, b) in enumerate(cards):
-    card(s, 0.83 + i * 2.97, 4.35, 2.75, 2.1, c, t, b)
+cards = [(ROYAL, "truck", "Coleta e transporte", "Com emissão de MTR, dando respaldo legal à logística."),
+         (ROYAL, "filter", "Triagem técnica", "Separação por composição e retirada de contaminantes."),
+         (ROYAL, "scissors", "Picotagem", "Adequação da granulometria à especificação do forno do cliente."),
+         (GREEN, "package-check", "Fornecimento", "Lotes padronizados, ensacados e rastreados até a entrega.")]
+for i, (c, ic, t, b) in enumerate(cards):
+    card(s, 0.83 + i * 2.97, 4.25, 2.75, 2.35, c, t, b, ico=ic)
 footer(s)
 
 # ---------- 3. O RESÍDUO ----------
@@ -226,15 +241,15 @@ header(s, "O material", [("Aparas têxteis pós-industriais, ", False), ("pronta
 for i, f in enumerate((f1, f2, f3)):
     s.shapes.add_picture(f, Inches(0.83 + i * 2.35), Inches(1.75), Inches(2.2), Inches(2.75))
 text(s, 0.83, 4.65, 7, 0.3, "Registro fotográfico do material ensacado e estocado em lotes.", size=9, color=GRAY)
-items = [("Origem", "Aparas e sobras de corte da indústria de confecção: material limpo, seco e sem uso prévio."),
-         ("Composição", "Mistura de aparas de fibras naturais e sintéticas, padronizada por lote para manter o alto PCI."),
-         ("Forma", "Picotado em fragmentos, o que facilita dosagem e alimentação contínua."),
-         ("Embalagem", "Sacos de até 30 kg, com manuseio simples e estocagem organizada por lote.")]
+items = [("factory", "Origem", "Aparas e sobras de corte da indústria de confecção: material limpo, seco e sem uso prévio."),
+         ("layers", "Composição", "Mistura de aparas de fibras naturais e sintéticas, padronizada por lote para manter o alto PCI."),
+         ("scissors", "Forma", "Picotado em fragmentos, o que facilita dosagem e alimentação contínua."),
+         ("package", "Embalagem", "Sacos de até 30 kg, com manuseio simples e estocagem organizada por lote.")]
 y = 1.75
-for t, b in items:
-    rect(s, 8.15, y + 0.05, 0.06, 0.55, ROYAL)
-    text(s, 8.4, y, 4.1, 0.3, [[(t, True)]], size=12, color=TEXT)
-    text(s, 8.4, y + 0.3, 4.1, 0.6, b, size=10, color=GRAY)
+for ic, t, b in items:
+    icon(s, ic, 8.1, y + 0.02, 0.4)
+    text(s, 8.75, y, 3.75, 0.3, [[(t, True)]], size=12, color=TEXT)
+    text(s, 8.75, y + 0.3, 3.75, 0.6, b, size=10, color=GRAY)
     y += 1.12
 footer(s)
 
@@ -242,13 +257,14 @@ footer(s)
 s = white_slide()
 header(s, "Resultados analíticos", [("Laudo laboratorial: ", False), ("alto poder calorífico e baixo cloro", True)],
        sub="Amostra de tecido triturado (matriz resíduo sólido), analisada por laboratório acreditado em 2026.")
-big = [(ROYAL, "9.953,8", "kcal/kg", "Poder Calorífico Inferior (PCI, base seca)", "Referência mínima: ≥ 1.800 kcal/kg"),
-       (BLUE, "< 0,05", "%", "Cloro (base seca)", "Referência máxima: ≤ 1,0 %"),
-       (GREEN, "3,77", "%", "Umidade", "96,23 % de sólidos")]
-for i, (c, v, u, t, ref) in enumerate(big):
+big = [(ROYAL, "flame", "9.953,8", "kcal/kg", "Poder Calorífico Inferior (PCI, base seca)", "Referência mínima: ≥ 1.800 kcal/kg"),
+       (BLUE, "flask-conical", "< 0,05", "%", "Cloro (base seca)", "Referência máxima: ≤ 1,0 %"),
+       (GREEN, "droplets", "3,77", "%", "Umidade", "96,23 % de sólidos")]
+for i, (c, ic, v, u, t, ref) in enumerate(big):
     x = 0.83 + i * 3.95
     rect(s, x, 2.3, 3.75, 2.75, CARD)
     rect(s, x, 2.3, 3.75, 0.06, c)
+    icon(s, ic, x + 3.75 - 0.8, 2.62, 0.45, c)
     text(s, x + 0.35, 2.65, 3.2, 0.9, [[(v, True, c, 40), ("  " + u, False, c, 14)]])
     text(s, x + 0.35, 3.65, 3.1, 0.6, [[(t, True)]], size=12)
     text(s, x + 0.35, 4.3, 3.1, 0.4, ref, size=10, color=GRAY)
@@ -285,14 +301,15 @@ footer(s)
 s = white_slide()
 header(s, "Equivalência energética", [("1 tonelada de resíduo têxtil ", True), ("substitui aproximadamente…", False)],
        sub="≈ 41,7 GJ de energia por tonelada (PCI 9.953,8 kcal/kg)")
-eq = [(ROYAL, "1,0 t", "de óleo combustível"), (BLUE, "1,2 t", "de coque de petróleo"),
-      (GREEN, "1,7 t", "de carvão mineral"), (ROYAL, "~1.150 m³", "de gás natural")]
-for i, (c, v, t) in enumerate(eq):
+eq = [(ROYAL, "fuel", "1,0 t", "de óleo combustível"), (BLUE, "flame", "1,2 t", "de coque de petróleo"),
+      (GREEN, "pickaxe", "1,7 t", "de carvão mineral"), (ROYAL, "wind", "~1.150 m³", "de gás natural")]
+for i, (c, ic, v, t) in enumerate(eq):
     x = 0.83 + i * 2.97
-    rect(s, x, 2.4, 2.75, 2.4, CARD)
-    rect(s, x, 2.4, 2.75, 0.06, c)
-    text(s, x, 2.95, 2.75, 0.8, [[(v, True, c, 32)]], align=PP_ALIGN.CENTER)
-    text(s, x + 0.2, 3.9, 2.35, 0.6, t, size=12, color=TEXT, align=PP_ALIGN.CENTER)
+    rect(s, x, 2.3, 2.75, 2.6, CARD)
+    rect(s, x, 2.3, 2.75, 0.06, c)
+    icon(s, ic, x + 2.75 / 2 - 0.22, 2.6, 0.44, c)
+    text(s, x, 3.2, 2.75, 0.8, [[(v, True, c, 32)]], align=PP_ALIGN.CENTER)
+    text(s, x + 0.2, 4.1, 2.35, 0.6, t, size=12, color=TEXT, align=PP_ALIGN.CENTER)
 hline(s, 0.83, 5.15, 11.67)
 text(s, 0.83, 5.35, 11.6, 0.5, [[("Menos combustível fóssil comprado, ", True, ROYAL),
                                 ("com o mesmo aporte térmico no processo.", False, TEXT)]], size=16)
@@ -303,12 +320,14 @@ footer(s)
 # ---------- 7. APLICAÇÕES ----------
 s = white_slide()
 header(s, "Aplicações na mineração", [("Onde o resíduo têxtil ", False), ("gera valor na sua operação", True)])
-apps = [(ROYAL, "01", "Fornos de pelotização", "Substituição parcial do combustível sólido e do gás natural no endurecimento de pelotas."),
-        (BLUE, "02", "Fornos de calcinação", "Aporte térmico em fornos de cal e calcinação de calcário e dolomita."),
-        (GREEN, "03", "Secadores de minério", "Geração de calor para secagem de concentrados e minério úmido."),
-        (ROYAL, "04", "Caldeiras e geradores", "Vapor e energia térmica em caldeiras adaptadas a combustível sólido.")]
-for i, (c, n, t, b) in enumerate(apps):
-    card(s, 0.83 + i * 2.97, 1.8, 2.75, 3.3, c, t, b, num=n)
+apps = [(ROYAL, "circle-dot", "01", "Fornos de pelotização", "Substituição parcial do combustível sólido e do gás natural no endurecimento de pelotas."),
+        (BLUE, "flame", "02", "Fornos de calcinação", "Aporte térmico em fornos de cal e calcinação de calcário e dolomita."),
+        (GREEN, "wind", "03", "Secadores de minério", "Geração de calor para secagem de concentrados e minério úmido."),
+        (ROYAL, "factory", "04", "Caldeiras e geradores", "Vapor e energia térmica em caldeiras adaptadas a combustível sólido.")]
+for i, (c, ic, n, t, b) in enumerate(apps):
+    x = 0.83 + i * 2.97
+    card(s, x, 1.8, 2.75, 3.3, c, t, b, ico=ic)
+    text(s, x + 2.75 - 0.8, 2.0, 0.5, 0.3, n, size=11, color=GRAY, align=PP_ALIGN.RIGHT)
 hline(s, 0.83, 5.45, 11.67)
 text(s, 0.83, 5.6, 11.6, 0.8, [[("Uso como substituição parcial, ", True, ROYAL),
                                 ("iniciando com teste de queima e dosagem controlada, sujeito ao licenciamento ambiental "
@@ -318,35 +337,38 @@ footer(s)
 # ---------- 8. BENEFÍCIOS ----------
 s = white_slide()
 header(s, "Benefícios", [("Vantagens para a ", False), ("mineradora", True)])
-ben = [(ROYAL, "Redução de custo energético", "Energia de alto PCI a um custo competitivo frente aos combustíveis convencionais."),
-       (BLUE, "Menos combustível fóssil", "Substituição parcial de coque, carvão, óleo ou gás no processo térmico."),
-       (GREEN, "Agenda ESG", "Economia circular e aterro zero, com indicadores para relatórios de sustentabilidade."),
-       (ROYAL, "Baixo teor de cloro", "Menor risco de corrosão e incrustação em fornos e dutos."),
-       (BLUE, "Baixa umidade", "Material seco (3,77 %), com energia útil elevada na queima."),
-       (GREEN, "Rastreabilidade total", "MTR, certificado de destinação e controle por lote, com segurança jurídica.")]
-for i, (c, t, b) in enumerate(ben):
+ben = [(ROYAL, "trending-down", "Redução de custo energético", "Energia de alto PCI a um custo competitivo frente aos combustíveis convencionais."),
+       (ROYAL, "fuel", "Menos combustível fóssil", "Substituição parcial de coque, carvão, óleo ou gás no processo térmico."),
+       (GREEN, "leaf", "Agenda ESG", "Economia circular e aterro zero, com indicadores para relatórios de sustentabilidade."),
+       (ROYAL, "shield-check", "Baixo teor de cloro", "Menor risco de corrosão e incrustação em fornos e dutos."),
+       (ROYAL, "droplets", "Baixa umidade", "Material seco (3,77 %), com energia útil elevada na queima."),
+       (GREEN, "qr-code", "Rastreabilidade total", "MTR, certificado de destinação e controle por lote, com segurança jurídica.")]
+for i, (c, ic, t, b) in enumerate(ben):
     col, row = i % 3, i // 3
-    card(s, 0.83 + col * 3.95, 1.8 + row * 2.4, 3.75, 2.15, c, t, b)
+    card(s, 0.83 + col * 3.95, 1.7 + row * 2.5, 3.75, 2.3, c, t, b, ico=ic)
 footer(s)
 
 # ---------- 9. FLUXO ----------
 s = white_slide()
 header(s, "Fluxo operacional", [("Como preparamos o ", False), ("combustível", True)])
-steps = [("Coleta", "Recolhimento na indústria geradora com MTR"), ("Recebimento", "Conferência, pesagem e registro"),
-         ("Triagem", "Retirada de contaminantes e metais"), ("Picotagem", "Granulometria sob especificação"),
-         ("Ensacamento", "Sacos de até 30 kg, por lote"), ("Expedição", "Entrega programada com MTR")]
+steps = [("truck", "Coleta", "Recolhimento na indústria geradora com MTR"),
+         ("inbox", "Recebimento", "Conferência, pesagem e registro"),
+         ("filter", "Triagem", "Retirada de contaminantes e metais"),
+         ("scissors", "Picotagem", "Granulometria sob especificação"),
+         ("package", "Ensacamento", "Sacos de até 30 kg, por lote"),
+         ("send", "Expedição", "Entrega programada com MTR")]
 w = 1.8
-for i, (t, b) in enumerate(steps):
+for i, (ic, t, b) in enumerate(steps):
     x = 0.83 + i * 1.975
     c = GREEN if i == len(steps) - 1 else ROYAL
     circ = rect(s, x + w / 2 - 0.45, 2.1, 0.9, 0.9, WHITE, c, shape=MSO_SHAPE.OVAL)
     circ.line.width = Pt(1.5)
-    text(s, x + w / 2 - 0.45, 2.1, 0.9, 0.9, [[(f"{i + 1:02d}", True)]], size=16, color=c, align=PP_ALIGN.CENTER,
-         anchor=MSO_ANCHOR.MIDDLE)
+    icon(s, ic, x + w / 2 - 0.22, 2.33, 0.44, c)
     if i < len(steps) - 1:
         hline(s, x + w / 2 + 0.55, 2.55, 0.95, BORDER, 1.5)
-    text(s, x, 3.2, w, 0.35, [[(t, True)]], size=12, align=PP_ALIGN.CENTER)
-    text(s, x, 3.55, w, 0.8, b, size=10, color=GRAY, align=PP_ALIGN.CENTER)
+    text(s, x, 3.15, w, 0.3, f"{i + 1:02d}", size=10, color=c, align=PP_ALIGN.CENTER)
+    text(s, x, 3.42, w, 0.35, [[(t, True)]], size=12, align=PP_ALIGN.CENTER)
+    text(s, x, 3.77, w, 0.8, b, size=10, color=GRAY, align=PP_ALIGN.CENTER)
 rect(s, 0.83, 4.7, 11.67, 1.55, CARD)
 rect(s, 0.83, 4.7, 0.06, 1.55, ROYAL)
 text(s, 1.15, 4.9, 11.1, 1.2, [[("Estrutura própria de preparação", True, ROYAL)],
@@ -359,17 +381,18 @@ footer(s)
 s = white_slide()
 header(s, "Capacidade e logística", [("Fornecimento recorrente de ", False), ("1.000 toneladas por mês", True)],
        sub="Base operacional em São Paulo/SP (Belenzinho), com entrega programada na unidade do cliente.")
-cap = [(ROYAL, "1.000", "t/mês", "Volume disponível", "Fornecimento contínuo e programado"),
-       (BLUE, "14", "t", "Por carga (truck)", "Sacos de até 30 kg, carga padronizada"),
-       (GREEN, "~72", "cargas/mês", "Entregas mensais", "Cerca de 3 cargas por dia útil"),
-       (ROYAL, "~41.700", "GJ/mês", "Energia disponível", "≈ 9,95 bilhões de kcal/mês")]
-for i, (c, v, u, t, b) in enumerate(cap):
+cap = [(ROYAL, "boxes", "1.000", "t/mês", "Volume disponível", "Fornecimento contínuo e programado"),
+       (BLUE, "truck", "14", "t", "Por carga (truck)", "Sacos de até 30 kg, carga padronizada"),
+       (GREEN, "calendar-check", "~72", "cargas/mês", "Entregas mensais", "Cerca de 3 cargas por dia útil"),
+       (ROYAL, "zap", "~41.700", "GJ/mês", "Energia disponível", "≈ 9,95 bilhões de kcal/mês")]
+for i, (c, ic, v, u, t, b) in enumerate(cap):
     x = 0.83 + i * 2.97
-    rect(s, x, 2.3, 2.75, 2.6, CARD)
-    rect(s, x, 2.3, 2.75, 0.06, c)
-    text(s, x + 0.3, 2.6, 2.4, 0.8, [[(v, True, c, 30), (" " + u, False, c, 11)]])
-    text(s, x + 0.3, 3.55, 2.3, 0.4, [[(t, True)]], size=12)
-    text(s, x + 0.3, 3.95, 2.3, 0.8, b, size=10, color=GRAY)
+    rect(s, x, 2.2, 2.75, 2.8, CARD)
+    rect(s, x, 2.2, 2.75, 0.06, c)
+    icon(s, ic, x + 0.3, 2.48, 0.42, c)
+    text(s, x + 0.3, 3.05, 2.4, 0.7, [[(v, True, c, 28), (" " + u, False, c, 11)]])
+    text(s, x + 0.3, 3.85, 2.3, 0.4, [[(t, True)]], size=12)
+    text(s, x + 0.3, 4.2, 2.3, 0.7, b, size=10, color=GRAY)
 hline(s, 0.83, 5.25, 11.67)
 text(s, 0.83, 5.45, 11.6, 0.5, [[("Volume recorrente e escala ", True, ROYAL),
                                 ("para substituir parte relevante do combustível do processo, com cronograma de "
@@ -416,14 +439,14 @@ footer(s)
 # ---------- 11. CONFORMIDADE ----------
 s = white_slide()
 header(s, "Conformidade", [("Rastreabilidade e ", False), ("conformidade ambiental", True)])
-conf = [(ROYAL, "MTR", "Manifesto de Transporte de Resíduos emitido em cada coleta e expedição."),
-        (ROYAL, "Laudo analítico", "Caracterização energética (PCI, cloro, umidade) do material fornecido."),
-        (ROYAL, "Controle por lote", "Registro fotográfico, pesagem e identificação de cada lote."),
-        (GREEN, "Destinação comprovada", "Certificado de destinação final ambientalmente adequada.")]
-for i, (c, t, b) in enumerate(conf):
-    card(s, 0.83 + i * 2.97, 1.8, 2.75, 2.5, c, t, b, title_lines=2)
-hline(s, 0.83, 4.7, 11.67)
-text(s, 0.83, 4.9, 11.6, 1.4, [[("Rastreabilidade completa: ", True, ROYAL), ("da indústria geradora ao forno da mineradora.", False, TEXT)],
+conf = [(ROYAL, "file-text", "MTR", "Manifesto de Transporte de Resíduos emitido em cada coleta e expedição."),
+        (ROYAL, "flask-conical", "Laudo analítico", "Caracterização energética (PCI, cloro, umidade) do material fornecido."),
+        (ROYAL, "tags", "Controle por lote", "Registro fotográfico, pesagem e identificação de cada lote."),
+        (GREEN, "badge-check", "Destinação comprovada", "Certificado de destinação final ambientalmente adequada.")]
+for i, (c, ic, t, b) in enumerate(conf):
+    card(s, 0.83 + i * 2.97, 1.7, 2.75, 2.9, c, t, b, title_lines=2, ico=ic)
+hline(s, 0.83, 4.85, 11.67)
+text(s, 0.83, 5.0, 11.6, 1.4, [[("Rastreabilidade completa: ", True, ROYAL), ("da indústria geradora ao forno da mineradora.", False, TEXT)],
                                [("Apoio técnico à mineradora nas etapas de licenciamento para uso de combustível derivado de "
                                  "resíduo (ex.: Resolução SIMA nº 47/2020 no Estado de São Paulo).", False, GRAY, 11)]],
      size=15, line_spacing=1.4)
@@ -432,17 +455,18 @@ footer(s)
 # ---------- 12. PRÓXIMOS PASSOS ----------
 s = white_slide()
 header(s, "Implantação", [("Próximos ", False), ("passos", True)])
-nxt = [("Envio de amostra", "Material representativo para análise da mineradora."),
-       ("Teste de queima", "Ensaio controlado no equipamento de destino."),
-       ("Licenciamento", "Adequação da licença para uso do combustível alternativo."),
-       ("Fornecimento piloto", "Lotes iniciais com monitoramento de desempenho."),
-       ("Contrato contínuo", "Fornecimento regular e programado.")]
-for i, (t, b) in enumerate(nxt):
+nxt = [("send", "Envio de amostra", "Material representativo para análise da mineradora."),
+       ("flame", "Teste de queima", "Ensaio controlado no equipamento de destino."),
+       ("clipboard-check", "Licenciamento", "Adequação da licença para uso do combustível alternativo."),
+       ("play", "Fornecimento piloto", "Lotes iniciais com monitoramento de desempenho."),
+       ("handshake", "Contrato contínuo", "Fornecimento regular e programado.")]
+for i, (ic, t, b) in enumerate(nxt):
     x = 0.83 + i * 2.37
     c = GREEN if i == len(nxt) - 1 else ROYAL
     rect(s, x, 2.0, 2.2, 3.0, CARD)
     rect(s, x, 2.0, 2.2, 0.06, c)
     text(s, x + 0.25, 2.3, 1.5, 0.5, f"{i + 1:02d}", size=24, color=c)
+    icon(s, ic, x + 2.2 - 0.65, 2.35, 0.4, c)
     text(s, x + 0.25, 3.0, 1.8, 0.6, [[(t, True)]], size=12)
     text(s, x + 0.25, 3.65, 1.8, 1.2, b, size=10, color=GRAY)
 text(s, 0.83, 5.35, 11.6, 0.8, [[("Solicitamos cotação formal em R$/t ", True, ROYAL),
