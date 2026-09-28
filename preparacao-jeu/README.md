@@ -11,6 +11,7 @@ Material de estudo e simulações para o **Processo Seletivo 2026.2 do Jornal Ec
 | [`01-roteiro-de-estudos.md`](01-roteiro-de-estudos.md) | Roteiro de estudos por fases (até a inscrição, dinâmica e entrevista), estrutura do JEU, conteúdo técnico mínimo e checklists |
 | [`02-simulacao-dinamica-em-grupo.md`](02-simulacao-dinamica-em-grupo.md) | Simulação da 1ª fase: 3 exercícios cronometrados, critérios de avaliação, papéis e frases-chave |
 | [`03-simulacao-entrevista.md`](03-simulacao-entrevista.md) | Simulação da 2ª fase: banco de perguntas (motivação, editorial, comportamental, técnica), método STAR, pitch e role-play |
+| [`04-foco-research.md`](04-foco-research.md) | **Foco no núcleo de Research:** estudo por área, mapa de conexões, modelo de nota de research, papel na dinâmica e perguntas específicas |
 
 ## 🗓️ Calendário do PS
 

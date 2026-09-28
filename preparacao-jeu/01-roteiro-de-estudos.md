@@ -38,7 +38,7 @@ Seu certificado do **Curso de Modelagem Financeira e Análise Empresarial (GMF)*
 - **Redação / Research / Editorial** → transformam investigação em conteúdo (núcleo prioritário: mín. 3 vagas).
 - **Apoio**: Marketing, Administração e RH, Tecnologia.
 
-> 💡 No formulário você indica núcleos de maior/menor preferência. Pense nisso **antes** — com seu perfil (finanças + interesse em escrever), Research e Redação/Editorial são o encaixe natural.
+> 💡 No formulário você indica núcleos de maior/menor preferência. Pense nisso **antes** — sua escolha é **Research** (1ª preferência). Encaixa bem com a sua base de finanças (GMF). Como 2ª opção, faz sentido marcar Redação/Editorial, que é o núcleo prioritário (mín. 3 vagas) e trabalha lado a lado com Research. Plano específico em `04-foco-research.md`.
 
 ---
 

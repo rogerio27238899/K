@@ -35,7 +35,7 @@ Mantenha cada resposta em **60–90 segundos**. Vá ao ponto.
 Estrutura: **Quem sou → Por que economia/finanças → Por que o JEU → O que trago.**
 
 **Modelo (adapte com sua verdade):**
-> "Sou a Maria Clara, estudante da Unicamp. Me interesso por economia e mercado financeiro — tanto que fiz o Curso de Modelagem Financeira e Análise Empresarial do GMF, onde aprendi a analisar empresas na prática. Mas o que me atrai no JEU é justamente juntar essa base técnica com **comunicação acessível**: eu gosto de entender um tema complexo e conseguir explicá-lo de um jeito que qualquer pessoa entenda. É isso que eu quero desenvolver no núcleo de [Research/Redação]."
+> "Sou a Maria Clara, estudante da Unicamp. Me interesso por economia e mercado financeiro — tanto que fiz o Curso de Modelagem Financeira e Análise Empresarial do GMF, onde aprendi a analisar empresas na prática. Mas o que me atrai no JEU é justamente juntar essa base técnica com **comunicação acessível**: eu gosto de entender um tema complexo e conseguir explicá-lo de um jeito que qualquer pessoa entenda. É isso que eu quero desenvolver no núcleo de **Research**: investigar o que está por trás dos movimentos do mercado e transformar isso em análise que alimente o Diagnóstico de Mercado."
 
 ---
 
@@ -67,7 +67,9 @@ Estrutura: **Quem sou → Por que economia/finanças → Por que o JEU → O que
 
 **7. Em qual núcleo você quer atuar? Por quê?**
 → Seja coerente com o que marcou no formulário. Justifique com seu perfil.
-> *"Research, porque gosto de investigar dados e cenários — e minha experiência com modelagem me deu base para isso. Mas tenho interesse em Redação também, porque quero treinar a parte de comunicar."*
+> *"Research. Gosto de investigar dados e cenários, e o curso de modelagem do GMF me deu base para analisar empresas e números. Também sei que no JEU a pesquisa precisa sair clara para a Redação, então quero entregar análises que já cheguem organizadas e fáceis de transformar em texto."*
+
+→ Mais perguntas específicas de Research: veja `04-foco-research.md`.
 
 **8. O que você acha que faz um bom texto sobre economia?**
 → Clareza, dado contextualizado, o essencial primeiro (pirâmide invertida), traduzir jargão, não subestimar nem superestimar o leitor.
@@ -108,7 +110,7 @@ Estrutura: **Quem sou → Por que economia/finanças → Por que o JEU → O que
 ### 🔹 Bloco 5 — Perguntas que VOCÊ faz (tenha 2–3 prontas)
 
 Perguntar demonstra interesse genuíno. Exemplos:
-- *"Como é a rotina de um membro no núcleo de Research/Redação no dia a dia?"*
+- *"Como é a rotina de um membro no núcleo de Research no dia a dia? Cada membro fica fixo em uma das 5 áreas ou roda entre elas?"*
 - *"Como funciona o processo de construção do Diagnóstico de Mercado entre as áreas?"*
 - *"Que competência vocês mais veem crescer nos membros ao longo do tempo?"*
 - *"Quais os próximos passos e prazos depois desta entrevista?"*
@@ -122,7 +124,7 @@ Perguntar demonstra interesse genuíno. Exemplos:
 Peça a alguém para ser o entrevistador, ou grave-se respondendo. Roteiro realista:
 
 1. *(Abertura)* "Fala um pouco sobre você e por que se inscreveu no JEU." → **pitch**
-2. "Você marcou [núcleo] como preferência. Por quê?"
+2. "Você marcou Research como preferência. Por quê? Qual das 5 áreas te atrai mais?"
 3. "Explica pra mim, como se eu não soubesse nada de economia, o que é a inflação."
 4. "Me conta uma notícia econômica recente que te interessou."
 5. "Conta uma situação de trabalho em equipe e qual foi seu papel."
