@@ -200,3 +200,246 @@ paste_h(im, DEC_W, x + 60, y + 73, 54)
 im.save(os.path.join(OUT, "post1_story.png"))
 
 print("ok:", sorted(os.listdir(OUT)))
+
+
+
+# =====================================================================
+#  FASES 2 A 4  (cronograma do Gabriel)
+# =====================================================================
+import datetime as dt
+
+# >>> CONFIRMAR COM A DECADE E A LIGA antes de publicar <<<
+EVENTO = {
+    "data": dt.date(2026, 10, 26),  # assumida: fim do período de divulgação (26/10)
+    "local": "Unicamp · Campinas",
+}
+EV = EVENTO["data"]
+MESES = ["", "janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro",
+         "outubro", "novembro", "dezembro"]
+SEMANA = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"]
+DATA = f"{EV.day:02d}/{EV.month:02d}"
+DATA_EXT = f"{SEMANA[EV.weekday()]}, {EV.day} de {MESES[EV.month]}"
+
+
+def save(im, name):
+    im.save(os.path.join(OUT, name))
+
+
+def wrap(d, x, y, txt, font, fill, maxw, lh):
+    line = ""
+    for w in txt.split():
+        t = (line + " " + w).strip()
+        if d.textlength(t, font=font) <= maxw:
+            line = t
+        else:
+            d.text((x, y), line, font=font, fill=fill)
+            y += lh
+            line = w
+    if line:
+        d.text((x, y), line, font=font, fill=fill)
+        y += lh
+    return y
+
+
+def title(d, x, y, parts, size, maxw=W - 160):
+    """Título em grotesca pesada; reduz o tamanho até todas as linhas caberem."""
+    while max(sum(d.textlength(t, font=grotesk(size)) for t, _ in ln) for ln in parts) > maxw:
+        size -= 4
+    return lines(d, x, y, parts, size, size)
+
+
+def rows(d, y, items, tsize=36, bsize=28):
+    """Lista numerada com linhas finas, como as pistas do Post #1."""
+    for n, t, b in items:
+        d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
+        d.text((80, y + 30), n, font=mono(28, True), fill=YELLOW)
+        d.text((170, y + 24), t, font=grotesk(tsize), fill=WHITE)
+        y2 = y + 24 + tsize + 12
+        if b:
+            y2 = wrap(d, 170, y2, b, grotesk(bsize, "Regular"), GRAY, W - 250, bsize + 10)
+        y = y2 + 24
+    d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
+    return y
+
+
+def info_rows(d, y, items, vx=330):
+    """Tabela chave/valor (O QUÊ, QUANDO, ONDE...)."""
+    for k, v in items:
+        d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
+        d.text((80, y + 34), k, font=mono(26, True), fill=YELLOW)
+        y = wrap(d, vx, y + 28, v, grotesk(36, "Medium"), WHITE, W - 80 - vx, 46) + 26
+    d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
+    return y
+
+
+def button(d, x, y, txt):
+    f = mono(30, True)
+    d.rectangle([x, y, x + d.textlength(txt, font=f) + 60, y + 80], fill=YELLOW)
+    d.text((x + 30, y + 40), txt, font=f, fill=BLACK, anchor="lm")
+
+
+def story_footer(im, d):
+    y = SH - 400
+    d.line([(80, y), (SW - 80, y)], fill=LINE, width=2)
+    x = 80 + paste_h(im, LIGA, 80, y + 55, 90) + 30
+    d.text((x, y + 100), "×", font=grotesk(52, "Regular"), fill=GRAY, anchor="lm")
+    paste_h(im, DEC_W, x + 60, y + 73, 54)
+
+
+def story(name, rotulo, titulo, sub, dica, bloco):
+    """Story padrão: bloco amarelo, título, texto e faixa livre para o sticker (y ≈ 1330–1500)."""
+    im, d = base(SW, SH)
+    yellow_block(d, SW, bloco[0], bloco[1], h=300, bw=320)
+    label(d, (80, 380), rotulo, size=24)
+    y = title(d, 80, 470, titulo, 140)
+    y = wrap(d, 80, y + 40, sub, grotesk(42, "Medium"), WHITE, SW - 160, 56)
+    label(d, (80, max(y + 50, 1270)), dica, color=GRAY, size=22)
+    story_footer(im, d)
+    save(im, name)
+
+
+# ---------- POST 2 · 04/10 · Lançamento: conheça a Decade (carrossel) ----------
+im, d = base(W, H)
+yellow_block(d, W, "UNICAMP", "REVELADO", bw=300)
+label(d, (80, 110), "O SEGREDO FOI REVELADO")
+y = title(d, 80, 330, [[("CONHEÇA", WHITE)], [("A ", WHITE), ("DECADE", YELLOW)]], 150)
+wrap(d, 80, y + 60, "A startup financeira que vem à Unicamp com a Liga Empreendedora.",
+     grotesk(40, "Medium"), WHITE, W - 160, 54)
+footer(im, d, W, H)
+save(im, "post2_slide1_conheca.png")
+
+im, d = base(W, H)
+label(d, (80, 110), "QUEM É A DECADE · 02 / 03")
+y = title(d, 80, 200, [[("O QUE É A", WHITE)], [("DECADE", YELLOW), ("?", WHITE)]], 128)
+rows(d, y + 50, [("01", "Gestão de patrimônio com IA", "Tecnologia para cuidar dos investimentos de forma completa e personalizada."),
+                 ("02", "Time de peso", "Fundada por ex-executivos do Nubank."),
+                 ("03", "Mais acesso", "Leva um serviço antes restrito a grandes fortunas para mais pessoas.")])
+footer(im, d, W, H)
+save(im, "post2_slide2_o_que_e.png")
+
+im, d = base(W, H)
+label(d, (80, 110), "03 / 03")
+y = title(d, 80, 230, [[("E ELA VEM", WHITE)], [("ATÉ VOCÊ", YELLOW)]], 140)
+y = wrap(d, 80, y + 50, "O encontro Decade × Liga Empreendedora acontece na Unicamp. No próximo post: data, local e inscrições.",
+         grotesk(40, "Medium"), WHITE, W - 160, 54)
+x = 80 + paste_h(im, DEC_W, 80, y + 90, 90) + 40
+d.text((x, y + 135), "×", font=grotesk(80, "Light"), fill=YELLOW, anchor="lm")
+paste_h(im, LIGA, x + 80, y + 60, 150)
+button(d, 80, y + 280, "ative as notificações")
+footer(im, d, W, H, left_txt=None)
+save(im, "post2_slide3_ate_voce.png")
+
+story("post2_story.png", "CONHEÇA A DECADE", [[("STARTUP", WHITE)], [("FINANCEIRA", WHITE)], [("COM IA", YELLOW)]],
+      "Fundada por ex-executivos do Nubank, a Decade vem à Unicamp com a Liga Empreendedora.",
+      "MANDE SUA PERGUNTA PARA A DECADE ↓", ("UNICAMP", "REVELADO"))
+
+# ---------- POST 3 · 08/10 · Lançamento: o evento + inscrições (estático) ----------
+im, d = base(W, H)
+yellow_block(d, W, "INSCRIÇÕES", "ABERTAS", bw=330)
+label(d, (80, 110), "DECADE × LIGA EMPREENDEDORA")
+y = title(d, 80, 290, [[("DECADE", WHITE)], [("NA ", WHITE), ("UNICAMP", YELLOW)]], 130, maxw=W - 160)
+y = info_rows(d, y + 40, [("O QUÊ", "Encontro com o time da Decade sobre finanças, IA e empreendedorismo."),
+                          ("QUANDO", DATA_EXT[0].upper() + DATA_EXT[1:]),
+                          ("ONDE", EVENTO["local"]),
+                          ("PARA QUEM", "Estudantes de todos os cursos.")])
+button(d, 80, y + 40, "inscreva-se: link na bio")
+footer(im, d, W, H, left_txt=None)
+save(im, "post3_evento.png")
+
+story("post3_story.png", "INSCRIÇÕES ABERTAS", [[("GARANTA", WHITE)], [("SUA VAGA", YELLOW)]],
+      f"Decade × Liga Empreendedora · {DATA_EXT} · {EVENTO['local']}. Aberto a todos os cursos.",
+      "TOQUE NO LINK PARA SE INSCREVER ↓", ("INSCRIÇÕES", "ABERTAS"))
+
+# ---------- POST 4 · 12/10 · Motivação: por que ir (carrossel) ----------
+im, d = base(W, H)
+yellow_block(d, W, "UNICAMP", DATA, bw=300)
+label(d, (80, 110), "POR QUE IR?")
+title(d, 80, 330, [[("4 MOTIVOS", WHITE)], [("PARA NÃO", WHITE)], [("FICAR", WHITE)], [("DE FORA", YELLOW)]], 140)
+footer(im, d, W, H)
+save(im, "post4_slide1_motivos.png")
+
+im, d = base(W, H)
+label(d, (80, 110), "POR QUE IR? · 02 / 02")
+y = title(d, 80, 200, [[("POR QUE ", WHITE), ("IR", YELLOW), ("?", WHITE)]], 110)
+rows(d, y + 40, [("01", "Bastidores de uma fintech", "Como se constrói uma startup financeira do zero."),
+                 ("02", "IA aplicada a finanças", "Como a tecnologia está mudando o jeito de investir."),
+                 ("03", "Conexões", "Converse com o time da Decade e com a rede da Liga."),
+                 ("04", "Carreira", "Caminhos em finanças, tecnologia e empreendedorismo.")])
+footer(im, d, W, H, left_txt="inscrições: link na bio")
+save(im, "post4_slide2_por_que.png")
+
+story("post4_story.png", "POR QUE IR?", [[("BASTIDORES", WHITE)], [("DE UMA", WHITE)], [("FINTECH", YELLOW)]],
+      "Veja como se constrói uma startup financeira e converse com quem está fazendo isso.",
+      "VOCÊ JÁ INVESTE? RESPONDA NA ENQUETE ↓", ("UNICAMP", DATA))
+
+# ---------- POST 5 · 16/10 · Motivação: para quem é + autoridade (carrossel) ----------
+im, d = base(W, H)
+label(d, (80, 110), "PARA QUEM É? · 01 / 02")
+y = title(d, 80, 200, [[("É PRA", WHITE)], [("VOCÊ QUE", YELLOW), ("...", WHITE)]], 128)
+rows(d, y + 40, [("01", "estuda Economia ou Administração", "e quer ver o mercado financeiro por dentro."),
+                 ("02", "estuda Computação ou Engenharia", "e quer entender IA aplicada a produtos reais."),
+                 ("03", "pensa em empreender", "e quer aprender com quem fundou uma startup."),
+                 ("04", "é de qualquer curso", "e tem curiosidade por finanças e tecnologia.")])
+footer(im, d, W, H)
+save(im, "post5_slide1_para_quem.png")
+
+im, d = base(W, H)
+yellow_block(d, W, "UNICAMP", DATA, bw=300)
+label(d, (80, 110), "QUEM ESTÁ POR TRÁS")
+y = title(d, 80, 330, [[("FUNDADA", WHITE)], [("POR", WHITE)], [("EX-NUBANK", YELLOW)]], 150)
+y = wrap(d, 80, y + 50, "A Decade foi criada por ex-executivos do Nubank e chega à Unicamp com a Liga Empreendedora.",
+         grotesk(40, "Medium"), WHITE, W - 160, 54)
+button(d, 80, y + 50, "inscrições: link na bio")
+footer(im, d, W, H, left_txt=None)
+save(im, "post5_slide2_ex_nubank.png")
+
+story("post5_story.png", "PARA QUEM É?", [[("QUAL O", WHITE)], [("SEU CURSO", YELLOW), ("?", WHITE)]],
+      "O evento é aberto a estudantes de todos os cursos da Unicamp.",
+      "RESPONDA NA CAIXINHA ↓", ("UNICAMP", DATA))
+
+
+# ---------- POSTS 6 A 8 · Lembretes (estáticos) ----------
+def countdown(d, top, dias, width, big=540, after_gap=40):
+    """'FALTAM / N / DIAS' ou 'É AMANHÃ' / 'É HOJE'. Retorna o y final."""
+    if dias > 1:
+        d.text((80, top), "FALTAM", font=grotesk(110), fill=WHITE)
+        base_y = top + 150 + int(big * 0.74)
+        d.text((62, base_y), str(dias), font=grotesk(big), fill=YELLOW, anchor="ls")
+        d.text((80, base_y + 30), "DIAS", font=grotesk(140), fill=WHITE)
+        return base_y + 30 + 140 + after_gap
+    palavra = "AMANHÃ" if dias == 1 else "HOJE"
+    return title(d, 80, top, [[("É", WHITE)], [(palavra, YELLOW)]], 240, maxw=width - 160) + after_gap
+
+
+for n, data_post in ((6, dt.date(2026, 10, 20)), (7, dt.date(2026, 10, 23)), (8, dt.date(2026, 10, 25))):
+    dias = (EV - data_post).days
+    tag = f"faltam_{dias}_dias" if dias > 1 else "e_amanha"
+    sub = ("para o encontro com a Decade na Unicamp." if dias > 1
+           else f"{DATA_EXT[0].upper() + DATA_EXT[1:]}, {EVENTO['local']}. Ainda dá tempo de se inscrever.")
+    im, d = base(W, H)
+    yellow_block(d, W, "DECADE × LIGA", DATA, bw=300)
+    label(d, (80, 110), "LEMBRETE")
+    y = countdown(d, 290, dias, W, big=500)
+    wrap(d, 80, y, sub, grotesk(38, "Medium"), WHITE, W - 160, 50)
+    footer(im, d, W, H, left_txt="inscrições: link na bio")
+    save(im, f"post{n}_{tag}.png")
+
+    im, d = base(SW, SH)
+    yellow_block(d, SW, "DECADE × LIGA", DATA, h=300, bw=320)
+    label(d, (80, 380), "LEMBRETE", size=24)
+    y = countdown(d, 470, dias, SW, big=480)
+    label(d, (80, max(y + 20, 1270)), "ADICIONE O LEMBRETE NO STICKER ↓", color=GRAY, size=22)
+    story_footer(im, d)
+    save(im, f"post{n}_story.png")
+
+# ---------- EXTRA · 26/10 · Story "É HOJE" (sugestão do Octavio) ----------
+im, d = base(SW, SH)
+yellow_block(d, SW, "DECADE × LIGA", DATA, h=300, bw=320)
+label(d, (80, 380), "É HOJE", size=24)
+y = countdown(d, 470, 0, SW)
+wrap(d, 80, y, f"Te esperamos na {EVENTO['local'].split(' ·')[0]}. Nos vemos lá!", grotesk(42, "Medium"), WHITE, SW - 160, 56)
+label(d, (80, 1270), "MARQUE QUEM VAI COM VOCÊ ↓", color=GRAY, size=22)
+story_footer(im, d)
+save(im, "extra_story_e_hoje.png")
+
+print("total:", len(os.listdir(OUT)), "peças")

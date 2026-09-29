@@ -39,3 +39,17 @@
 3. **Slide 3 (revelação):** foto do campus em preto e amarelo, "DECADE × LIGA EMPREENDEDORA", "na Unicamp · em breve", e logos das duas.
 4. **Story:** teaser com espaço livre para o sticker de enquete "Quem você acha que vem?".
 5. **Legenda:** suspense curto, convite para comentar e ativar notificações.
+
+---
+
+## Continuação: posts 2 a 8 (fases 2 a 4)
+
+**Tarefa:** Seguindo o cronograma do Gabriel e a mesma identidade do Post #1, crie os posts e stories das fases 2 a 4.
+- **04/10 · Lançamento:** carrossel "Conheça a Decade" (o que é, quem fundou, por que importa) + story com caixinha de perguntas.
+- **08/10 · Lançamento:** post do evento (o quê, quando, onde, para quem) com "inscrições abertas" + story com link.
+- **12/10 · Motivação:** carrossel "4 motivos para não ficar de fora" + story com enquete.
+- **16/10 · Motivação:** carrossel "Para quem é" + autoridade ("fundada por ex-Nubank") + story com caixinha.
+- **20/10, 23/10 e 25/10 · Lembretes:** "faltam 6 dias", "faltam 3 dias", "é amanhã", + stories com sticker de contagem regressiva.
+- **Extra 26/10:** story "É hoje", como o Octavio sugeriu no áudio.
+
+**Regras:** mesmas do Post #1. Data e local do evento ficam num único ponto do script, para trocar facilmente quando forem confirmados.
