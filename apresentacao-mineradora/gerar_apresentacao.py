@@ -1,4 +1,4 @@
-"""Gera a apresentação comercial Nunes & Lucato -> mineradora (resíduo têxtil).
+"""Gera a apresentação comercial Nunes & Lucato -> indústria cimenteira (resíduo têxtil).
 Uso: python3 gerar_apresentacao.py  (rodar a partir da raiz do repositório)
 """
 import os
@@ -30,7 +30,7 @@ GRAY = RGBColor(0x6B, 0x6B, 0x80)
 LIGHT = RGBColor(0xC9, 0xCA, 0xE8)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 FONT = "Montserrat"
-FOOTER_LABEL = "Resíduo Têxtil · Mineração"
+FOOTER_LABEL = "Resíduo Têxtil · Indústria Cimenteira"
 
 
 # ---------- assets ----------
@@ -208,9 +208,9 @@ f_wide = fit(FOTOS[1], os.path.join(ASSETS, "foto_wide.jpg"), (1400, 900))
 # ---------- 1. CAPA ----------
 s = prs.slides.add_slide(BLANK)
 dark_bg(s, cover_img)
-eyebrow(s, 0.83, 1.35, "Proposta comercial  ·  Setor de Mineração", color=LIGHT)
+eyebrow(s, 0.83, 1.35, "Proposta comercial  ·  Indústria Cimenteira", color=LIGHT)
 text(s, 0.83, 1.8, 7.2, 2.2, [[("Resíduo têxtil como ", False)], [("combustível alternativo", True)],
-                             [("para a mineração", False)]], size=38, color=WHITE, line_spacing=1.1)
+                             [("para a indústria cimenteira", False)]], size=34, color=WHITE, line_spacing=1.1)
 hline(s, 0.83, 4.3, 1.1, LIGHT, 1)
 text(s, 0.83, 4.5, 6.8, 0.9, "Energia de alto poder calorífico, baixo cloro e destinação ambientalmente adequada, "
      "com rastreabilidade da coleta à entrega.", size=14, color=LIGHT)
@@ -319,28 +319,54 @@ footer(s)
 
 # ---------- 7. APLICAÇÕES ----------
 s = white_slide()
-header(s, "Aplicações na mineração", [("Onde o resíduo têxtil ", False), ("gera valor na sua operação", True)])
-apps = [(ROYAL, "circle-dot", "01", "Fornos de pelotização", "Substituição parcial do combustível sólido e do gás natural no endurecimento de pelotas."),
-        (BLUE, "flame", "02", "Fornos de calcinação", "Aporte térmico em fornos de cal e calcinação de calcário e dolomita."),
-        (GREEN, "wind", "03", "Secadores de minério", "Geração de calor para secagem de concentrados e minério úmido."),
-        (ROYAL, "factory", "04", "Caldeiras e geradores", "Vapor e energia térmica em caldeiras adaptadas a combustível sólido.")]
+header(s, "Aplicações na indústria cimenteira", [("Onde o resíduo têxtil ", False), ("gera valor na sua operação", True)])
+apps = [(ROYAL, "flame", "01", "Queimador principal", "Substituição parcial do coque de petróleo na chama principal do forno de clínquer."),
+        (BLUE, "wind", "02", "Pré-calcinador", "Alimentação no calcinador, etapa que aceita bem combustíveis sólidos alternativos."),
+        (GREEN, "recycle", "03", "Coprocessamento", "Destruição térmica completa do resíduo, com as cinzas incorporadas ao clínquer."),
+        (ROYAL, "layers", "04", "Blend de CDR", "Componente de alto PCI que eleva e estabiliza o poder calorífico do blend.")]
 for i, (c, ic, n, t, b) in enumerate(apps):
     x = 0.83 + i * 2.97
     card(s, x, 1.8, 2.75, 3.3, c, t, b, ico=ic)
     text(s, x + 2.75 - 0.8, 2.0, 0.5, 0.3, n, size=11, color=GRAY, align=PP_ALIGN.RIGHT)
 hline(s, 0.83, 5.45, 11.67)
-text(s, 0.83, 5.6, 11.6, 0.8, [[("Uso como substituição parcial, ", True, ROYAL),
-                                ("iniciando com teste de queima e dosagem controlada, sujeito ao licenciamento ambiental "
-                                 "da unidade consumidora.", False, GRAY)]], size=12)
+text(s, 0.83, 5.6, 11.6, 0.8, [[("Uso como substituição térmica parcial, ", True, ROYAL),
+                                ("iniciando com teste de queima e dosagem controlada, conforme a licença de coprocessamento "
+                                 "da unidade (Resolução CONAMA nº 499/2020).", False, GRAY)]], size=12)
+footer(s)
+
+# ---------- 7b. VALOR AGREGADO ----------
+s = white_slide()
+header(s, "Aplicações na indústria cimenteira  ·  Valor agregado",
+       [("Valor agregado ", True), ("do material", False)],
+       sub="Do resíduo de confecção ao combustível pronto para o forno de clínquer.")
+chain = [(GRAY, "factory", "Resíduo de confecção", "Aparas e sobras de corte que iriam para aterro."),
+         (ROYAL, "scissors", "Preparação Nunes & Lucato", "Triagem, mistura padronizada e picotagem, moagem ou britagem."),
+         (GREEN, "flame", "Insumo energético", "Combustível alternativo com laudo, lote e especificação.")]
+for i, (c, ic, t, b) in enumerate(chain):
+    x = 0.83 + i * 3.95
+    rect(s, x, 2.1, 3.55, 1.15, CARD)
+    icon(s, ic, x + 0.25, 2.45, 0.44, ROYAL if c == GRAY else c)
+    text(s, x + 0.9, 2.25, 2.5, 0.35, [[(t, True)]], size=12, color=TEXT)
+    text(s, x + 0.9, 2.6, 2.5, 0.6, b, size=9, color=GRAY)
+    if i < len(chain) - 1:
+        text(s, x + 3.55, 2.4, 0.4, 0.5, [[("›", True, ROYAL, 24)]], align=PP_ALIGN.CENTER)
+val = [(ROYAL, "zap", "Energia acima do coque", "PCI de 9.953,8 kcal/kg, superior ao coque de petróleo (~8.000 kcal/kg)."),
+       (ROYAL, "package-check", "Pronto para o forno", "Umidade de 3,77 % dispensa secagem. Picotado, moído ou brita, sob especificação."),
+       (ROYAL, "shield-check", "Cloro 20× abaixo do limite", "< 0,05 % contra 1,0 %: preserva a margem de cloro do forno para outros resíduos."),
+       (GREEN, "leaf", "Ganho ambiental", "Menos combustível fóssil e aterro zero; a fração de fibras naturais é de origem biogênica.")]
+for i, (c, ic, t, b) in enumerate(val):
+    card(s, 0.83 + i * 2.97, 3.45, 2.75, 2.6, c, t, b, title_lines=2, ico=ic)
+text(s, 0.83, 6.25, 11.6, 0.4, [[("Qualidade constante por lote, com laudo e rastreabilidade: ", True, ROYAL),
+                               ("é isso que transforma um resíduo em insumo energético.", False, GRAY)]], size=11)
 footer(s)
 
 # ---------- 8. BENEFÍCIOS ----------
 s = white_slide()
-header(s, "Benefícios", [("Vantagens para a ", False), ("mineradora", True)])
+header(s, "Benefícios", [("Vantagens para a ", False), ("indústria cimenteira", True)])
 ben = [(ROYAL, "trending-down", "Redução de custo energético", "Energia de alto PCI a um custo competitivo frente aos combustíveis convencionais."),
-       (ROYAL, "fuel", "Menos combustível fóssil", "Substituição parcial de coque, carvão, óleo ou gás no processo térmico."),
+       (ROYAL, "fuel", "Menos combustível fóssil", "Substituição parcial do coque de petróleo no forno de clínquer."),
        (GREEN, "leaf", "Agenda ESG", "Economia circular e aterro zero, com indicadores para relatórios de sustentabilidade."),
-       (ROYAL, "shield-check", "Baixo teor de cloro", "Menor risco de corrosão e incrustação em fornos e dutos."),
+       (ROYAL, "shield-check", "Baixo teor de cloro", "Menor risco de incrustações e corrosão no sistema do forno."),
        (ROYAL, "droplets", "Baixa umidade", "Material seco (3,77 %), com energia útil elevada na queima."),
        (GREEN, "qr-code", "Rastreabilidade total", "MTR, certificado de destinação e controle por lote, com segurança jurídica.")]
 for i, (c, ic, t, b) in enumerate(ben):
@@ -405,7 +431,7 @@ footer(s)
 s = white_slide()
 header(s, "Especificação", [("Ficha técnica do ", False), ("produto", True)])
 rows = [("Produto", "Resíduo têxtil pós-industrial picotado (mistura de fibras)"),
-        ("Aplicação", "Combustível alternativo sólido (substituição parcial)"),
+        ("Aplicação", "Coprocessamento em fornos de clínquer (substituição térmica parcial)"),
         ("PCI (base seca)", "9.953,8 kcal/kg"),
         ("PCS", "10.040,0 kcal/kg"),
         ("Cloro (base seca)", "< 0,05 %"),
@@ -446,9 +472,9 @@ conf = [(ROYAL, "file-text", "MTR", "Manifesto de Transporte de Resíduos emitid
 for i, (c, ic, t, b) in enumerate(conf):
     card(s, 0.83 + i * 2.97, 1.7, 2.75, 2.9, c, t, b, title_lines=2, ico=ic)
 hline(s, 0.83, 4.85, 11.67)
-text(s, 0.83, 5.0, 11.6, 1.4, [[("Rastreabilidade completa: ", True, ROYAL), ("da indústria geradora ao forno da mineradora.", False, TEXT)],
-                               [("Apoio técnico à mineradora nas etapas de licenciamento para uso de combustível derivado de "
-                                 "resíduo (ex.: Resolução SIMA nº 47/2020 no Estado de São Paulo).", False, GRAY, 11)]],
+text(s, 0.83, 5.0, 11.6, 1.4, [[("Rastreabilidade completa: ", True, ROYAL), ("da indústria geradora ao forno de clínquer.", False, TEXT)],
+                               [("Apoio técnico à cimenteira no licenciamento do coprocessamento (Resolução CONAMA nº 499/2020 e, "
+                                 "no Estado de São Paulo, Resolução SIMA nº 145/2021).", False, GRAY, 11)]],
      size=15, line_spacing=1.4)
 footer(s)
 
@@ -477,8 +503,8 @@ footer(s)
 s = white_slide()
 header(s, "Implantação", [("Próximos ", False), ("passos", True)])
 nxt = [("send", "Envio de amostras", "5 kg de picotado, 5 kg de moído e 5 kg de pedra-brita."),
-       ("flame", "Teste de queima", "Ensaio controlado no equipamento de destino."),
-       ("clipboard-check", "Licenciamento", "Adequação da licença para uso do combustível alternativo."),
+       ("flame", "Teste de queima", "Ensaio controlado no forno de clínquer."),
+       ("clipboard-check", "Licenciamento", "Inclusão do material na licença de coprocessamento."),
        ("play", "Fornecimento piloto", "Lotes iniciais com monitoramento de desempenho."),
        ("handshake", "Contrato contínuo", "Fornecimento regular e programado.")]
 for i, (ic, t, b) in enumerate(nxt):
@@ -498,8 +524,8 @@ footer(s)
 # ---------- 13. ENCERRAMENTO ----------
 s = prs.slides.add_slide(BLANK)
 dark_bg(s, end_img)
-eyebrow(s, 0.83, 1.3, "Nunes & Lucato  ·  Mineração", color=LIGHT)
-text(s, 0.83, 1.75, 7.0, 2.6, [[("Transformar o resíduo têxtil em ", False), ("energia para a mineração", True),
+eyebrow(s, 0.83, 1.3, "Nunes & Lucato  ·  Indústria Cimenteira", color=LIGHT)
+text(s, 0.83, 1.75, 7.0, 2.6, [[("Transformar o resíduo têxtil em ", False), ("energia para a indústria cimenteira", True),
                                (" reduz custos, diminui o uso de combustíveis fósseis e fortalece a sua ", False),
                                ("agenda de economia circular", True), (".", False)]], size=22, color=WHITE,
      line_spacing=1.3)
@@ -515,10 +541,10 @@ for sl in prs.slides:
 
 cp = prs.core_properties
 cp.author = cp.last_modified_by = "Nunes & Lucato"
-cp.title = "Resíduo têxtil como combustível alternativo para a mineração"
+cp.title = "Resíduo têxtil como combustível alternativo para a indústria cimenteira"
 cp.subject = "Proposta comercial Nunes & Lucato"
 cp.comments = cp.keywords = cp.category = ""
 
-out = os.path.join(OUT_DIR, "Nunes_Lucato_Residuo_Textil_Mineradora.pptx")
+out = os.path.join(OUT_DIR, "Nunes_Lucato_Residuo_Textil_Industria_Cimenteira.pptx")
 prs.save(out)
 print("salvo:", out, "slides:", len(prs.slides))

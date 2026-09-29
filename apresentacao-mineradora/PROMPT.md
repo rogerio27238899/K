@@ -1,12 +1,12 @@
-# Prompt — Apresentação comercial para mineradora (resíduo têxtil)
+# Prompt — Apresentação comercial para a indústria cimenteira (resíduo têxtil)
 
-> Prompt usado para gerar `Nunes_Lucato_Residuo_Textil_Mineradora.pptx`.
+> Prompt usado para gerar `Nunes_Lucato_Residuo_Textil_Industria_Cimenteira.pptx`.
 
 ---
 
 **Papel:** Você é um consultor de negócios ambientais e designer de apresentações corporativas.
 
-**Tarefa:** Crie uma apresentação comercial completa (16:9, ~13 slides, em português) da **Nunes & Lucato Gestão Ambiental** para uma **mineradora**, oferecendo nosso **resíduo têxtil pós-industrial picotado** como **combustível alternativo** (substituição parcial de combustíveis fósseis em fornos e secadores).
+**Tarefa:** Crie uma apresentação comercial completa (16:9, ~13 slides, em português) da **Nunes & Lucato Gestão Ambiental** para a **indústria cimenteira**, oferecendo nosso **resíduo têxtil pós-industrial picotado** como **combustível alternativo** (coprocessamento em fornos de clínquer, substituindo parte do coque de petróleo).
 
 **Material de base:**
 1. **Laudo de laboratório** (amostra de tecido triturado, matriz resíduo sólido):
@@ -22,7 +22,7 @@
 - **Não mencionar nenhuma empresa terceira** que processe, transforme ou faça pirólise do resíduo, nem o solicitante do laudo, número do relatório, chave de validação ou endereço da coleta. Isso protege nossa vantagem competitiva. Citar só "laudo de laboratório acreditado".
 - **Não inventar preços nem volumes.** Condições comerciais serão tratadas em reunião.
 - Valores de outros combustíveis devem ser marcados como **referências típicas**.
-- Uso na mineradora sempre como **substituição parcial**, sujeita a teste de queima e licenciamento ambiental (CETESB / Res. SIMA 47/2020 para CDR).
+- Uso na cimenteira sempre como **substituição parcial**, sujeita a teste de queima e licenciamento ambiental (CONAMA 499/2020; em SP, SIMA 145/2021).
 - Embalagem: **sacos de até 30 kg**.
 - Tudo em nome da **Nunes & Lucato**. Nenhum dado do solicitante do laudo aparece nos slides nem nos metadados do arquivo.
 - O material é uma **mistura de fibras**, e é isso que explica o PCI alto. A composição é padronizada por lote.
@@ -34,7 +34,7 @@
 - Tipografia sans-serif leve (Montserrat), títulos grandes em peso leve com **palavra-chave em negrito**.
 - "Eyebrow" acima do título: traço curto + texto pequeno espaçado em azul.
 - Cards brancos/lilás com barra colorida no topo.
-- Rodapé: linha fina, logo Nunes & Lucato à esquerda, "Resíduo Têxtil · Mineração | nº" à direita.
+- Rodapé: linha fina, logo Nunes & Lucato à esquerda, "Resíduo Têxtil · Indústria Cimenteira | nº" à direita.
 - Capa e encerramento: metade esquerda escura com texto, metade direita com foto em duotone azul.
 
 **Estrutura:**
@@ -44,8 +44,9 @@
 4. Laudo em números
 5. Comparativo de poder calorífico
 6. Equivalência energética (1 t de resíduo substitui quanto de cada combustível)
-7. Aplicações na mineração (pelotização, calcinação, secagem, caldeiras)
-8. Benefícios para a mineradora
+7. Aplicações na indústria cimenteira (queimador principal, pré-calcinador, coprocessamento, blend de CDR)
+7b. Valor agregado do material (resíduo → preparação → insumo energético; energia, pronto para o forno, cloro, ganho ambiental)
+8. Benefícios para a indústria cimenteira
 9. Fluxo de preparação (coleta → triagem → picotagem → ensacamento 30 kg → expedição com MTR)
 10. Capacidade e logística (1.000 t/mês, 14 t por carga, ~72 cargas/mês, energia/mês)
 11. Ficha técnica do produto
