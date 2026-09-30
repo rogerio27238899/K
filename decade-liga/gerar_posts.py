@@ -1,9 +1,23 @@
-"""Gera o Post #1 (aquecimento) Decade × Liga Empreendedora: carrossel 3 slides + story.
+"""Gera os posts e stories Decade × Liga Empreendedora.
+
+Referência visual: as peças do Octávio (diretor de marketing) em arquivos/401499–401502.
+  - FASE 1 (aquecimento, Post 1 + story): estilo do teaser 401502. Off-white, símbolo da Decade em
+    marca d'água, título em serif (Playfair Display) com a palavra-chave em itálico, rótulos e datas em
+    mono espaçado, logos Decade | Liga lado a lado.
+  - FASES 2 A 4 (posts 2 a 8 + stories): estilo dos cartazes 401499–401501. Fundo preto, "DECADE" em
+    amarelo #F5C518 e mono pesado, "NA UNICAMP" em branco e mono leve, linhas tracejadas, faixa
+    "data - hora - local" em Anton, texto corrido em mono, "INSCREVA-SE!" em Anton amarelo,
+    logo da Liga à esquerda e da Decade à direita no rodapé.
+Paleta e fontes seguem o Manual_Marca_Evento_Decade.pdf (Liga: Anton, Montserrat, JetBrains Mono;
+Decade: serif editorial + mono).
+
 Uso: python3 decade-liga/gerar_posts.py  (a partir da raiz do repositório)
 """
+import datetime as dt
 import os
 import urllib.request
-from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageEnhance
+
+from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARQ = os.path.join(ROOT, "arquivos")
@@ -14,43 +28,92 @@ OUT = os.path.join(DIR, "posts")
 os.makedirs(ASSETS, exist_ok=True)
 os.makedirs(OUT, exist_ok=True)
 
-BLACK = (10, 10, 10)
-YELLOW = (243, 196, 29)
-WHITE = (255, 255, 255)
-GRAY = (140, 140, 140)
-LINE = (32, 32, 32)
-LIGA_LOGO_URL = "https://www.ligaempreendedora.com/uploads/1/3/9/2/13929691/prancheta-1-c-pia-13_orig.png"
+# >>> CONFIRMAR COM A DECADE E A LIGA antes de publicar <<<
+EVENTO = {
+    "data": dt.date(2026, 10, 26),
+    "hora": "9h",          # cartazes 401499–401501 dizem 9h; o teaser 401502 diz 17h30
+    "local": "Auditório",  # os cartazes não dizem qual auditório
+}
+EV = EVENTO["data"]
+MESES = ["", "janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro",
+         "outubro", "novembro", "dezembro"]
+SEMANA = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"]
+DATA = f"{EV.day:02d}.{EV.month:02d}"
+FAIXA = f"{DATA}  -  {EVENTO['hora']}  -  {EVENTO['local']}"   # como nos cartazes: "26.10 - 9h - Auditório"
+DATA_EXT = f"{SEMANA[EV.weekday()]}, {EV.day} de {MESES[EV.month]}"
+MES_UP = MESES[EV.month].upper()
+
+W, H = 1080, 1350     # feed 4:5
+SW, SH = 1080, 1920   # story 9:16
+
+# ---------- paletas (hex do manual, conferidos nos cartazes) ----------
+BLACK = (0, 0, 0)
+AMARELO = (245, 197, 24)     # #F5C518
+BRANCO = (255, 254, 251)     # #FFFEFB
+CINZA = (110, 117, 124)      # #6E757C (tracejado do 401501)
+CINZA_TXT = (170, 170, 170)  # texto secundário (subtítulo do 401499)
+
+D_OFF = (245, 241, 236)      # #F5F1EC
+D_CINZA_MEDIO = (81, 79, 77)  # #514F4D
+D_GRAFITE = (52, 51, 50)     # #343332
+D_WM = (233, 229, 223)       # marca d'água do 401502
+D_HAIR = (214, 209, 202)
 
 
-def grotesk(size, weight="Bold"):
-    f = ImageFont.truetype(os.path.join(FONTS, "SpaceGrotesk-VF.ttf"), size)
-    f.set_variation_by_name(weight)
+# ---------- fontes ----------
+def _vf(file, size, name):
+    f = ImageFont.truetype(os.path.join(FONTS, file), size)
+    f.set_variation_by_name(name)
     return f
 
 
-def mono(size, bold=False):
-    return ImageFont.truetype(os.path.join(FONTS, "SpaceMono-Bold.ttf" if bold else "SpaceMono-Regular.ttf"), size)
+def serif(size, italic=False):
+    return _vf("PlayfairDisplay-Italic-VF.ttf", size, "Italic") if italic else _vf("PlayfairDisplay-VF.ttf", size, "Regular")
 
 
-# ---------- logos ----------
-def liga_logo_white():
-    """Logo oficial (site da Liga): letras escuras viram brancas, amarelo é mantido."""
+def jb(size, weight="Regular"):
+    return _vf("JetBrainsMono-VF.ttf", size, weight)
+
+
+def anton(size):
+    return ImageFont.truetype(os.path.join(FONTS, "Anton-Regular.ttf"), size)
+
+
+def mont(size, weight="Bold"):
+    return _vf("Montserrat-VF.ttf", size, weight)
+
+
+def smono(size):
+    return ImageFont.truetype(os.path.join(FONTS, "SpaceMono-Bold.ttf"), size)
+
+
+# ---------- logos e imagens ----------
+LIGA_LOGO_URL = "https://www.ligaempreendedora.com/uploads/1/3/9/2/13929691/prancheta-1-c-pia-13_orig.png"
+
+
+def liga_original():
     src = os.path.join(ASSETS, "liga_logo_original.png")
     if not os.path.exists(src):
         req = urllib.request.Request(LIGA_LOGO_URL, headers={"User-Agent": "Mozilla/5.0"})
         open(src, "wb").write(urllib.request.urlopen(req, timeout=30).read())
     im = Image.open(src).convert("RGBA")
+    return im.crop(im.getbbox())
+
+
+def liga_on_dark():
+    """Versão para fundo preto, como nos cartazes: 'LIGA' em branco, foguete e 'EMPREENDEDORA' em amarelo."""
+    im = liga_original().copy()
     px = im.load()
     for y in range(im.height):
         for x in range(im.width):
             r, g, b, a = px[x, y]
-            if a and max(r, g, b) - min(r, g, b) < 60:  # tons neutros (letras) -> branco
-                px[x, y] = (255, 255, 255, a)
-    return im.crop(im.getbbox())
+            if a and max(r, g, b) - min(r, g, b) < 60:
+                px[x, y] = BRANCO + (a,)
+    return im
 
 
-def decade_logo(color):
-    """Recorta a logo da Decade do post do Gabriel (versão escura sobre fundo claro)."""
+def decade_lockup(color):
+    """Lockup símbolo + 'Decade', recortado de arquivos/Post #1 (Modelo 1_ob).png."""
     im = Image.open(os.path.join(ARQ, "Post #1 (Modelo 1_ob).png")).convert("L").crop((15, 1022, 680, 1172))
     alpha = ImageOps.invert(im).point(lambda v: 0 if v < 40 else min(255, int((v - 40) * 1.4)))
     out = Image.new("RGBA", im.size, color + (0,))
@@ -58,17 +121,39 @@ def decade_logo(color):
     return out.crop(out.getbbox())
 
 
+_SYM = None
+
+
+def decade_symbol_mask(h, blur=None):
+    global _SYM
+    if _SYM is None:
+        g = Image.open(os.path.join(ARQ, "Post #1 (Modelo 1_ob).png")).convert("L").crop((19, 1031, 165, 1167))
+        _SYM = ImageOps.invert(g)
+    m = _SYM.resize((int(_SYM.width * h / _SYM.height), h), Image.LANCZOS)
+    if blur:
+        m = m.point(lambda v: 255 if v > 110 else 0).filter(ImageFilter.GaussianBlur(blur))
+    else:
+        m = m.point(lambda v: 0 if v < 40 else min(255, int((v - 40) * 1.4)))
+    return m.crop(m.getbbox())
+
+
 def campus_photo(size):
-    """Foto aérea do campus (dos posts do Gabriel) em duotone preto e amarelo."""
-    im = Image.open(os.path.join(ARQ, "Post #1 (Modelo 1b).png")).convert("L").crop((0, 0, 1080, 1000))
-    im = ImageEnhance.Contrast(im).enhance(1.25)
-    im = ImageOps.colorize(im, black=BLACK, white=YELLOW, mid=(70, 56, 12))
-    return ImageOps.fit(im, size, Image.LANCZOS)
+    im = Image.open(os.path.join(ARQ, "Post #1 (Modelo 1b).png")).convert("RGB").crop((0, 0, 1080, 1000))
+    return ImageOps.fit(im, size, Image.LANCZOS, centering=(0.5, 0.45))
 
 
-LIGA = liga_logo_white()
-DEC_W = decade_logo(WHITE)
-DEC_B = decade_logo(BLACK)
+def qr_code():
+    """QR dos cartazes do Octávio (401500). Substituir pelo QR real da inscrição quando existir."""
+    return Image.open(os.path.join(ARQ, "401500.png")).convert("RGB").crop((505, 1262, 918, 1675))
+
+
+LIGA_ORIG = liga_original()
+LIGA_DARK = liga_on_dark()
+DEC_OFF = decade_lockup(BRANCO)
+DEC_BLACK = decade_lockup(BLACK)
+LIGA_BLACK = Image.new("RGBA", LIGA_ORIG.size, BLACK + (0,))
+LIGA_BLACK.putalpha(LIGA_ORIG.getchannel("A"))
+QR = qr_code()
 
 
 def paste_h(canvas, logo, x, y, h):
@@ -77,369 +162,410 @@ def paste_h(canvas, logo, x, y, h):
     return lg.width
 
 
-# ---------- base ----------
-def base(w, h):
-    im = Image.new("RGB", (w, h), BLACK)
-    d = ImageDraw.Draw(im)
-    for x in range(0, w, 180):  # grade sutil, como no post da Liga
-        d.line([(x, 0), (x, h)], fill=(20, 20, 20), width=1)
-    return im, d
-
-
-def label(d, xy, txt, color=YELLOW, size=26, spacing=6):
-    x, y = xy
-    f = mono(size, bold=True)
-    for ch in txt:
-        d.text((x, y), ch, font=f, fill=color)
-        x += d.textlength(ch, font=f) + spacing
-    return x
-
-
-def yellow_block(d, w, top_txt, big_txt, x1=None, h=250, bw=260):
-    x1 = x1 or w
-    d.rectangle([x1 - bw, 0, x1, h], fill=YELLOW)
-    d.text((x1 - 40, 36), top_txt, font=mono(24, True), fill=BLACK, anchor="ra")
-    size = 80
-    while d.textlength(big_txt, font=grotesk(size)) > bw - 60:
-        size -= 2
-    d.text((x1 - bw / 2, h - 44), big_txt, font=grotesk(size), fill=BLACK, anchor="ms")
-
-
-def footer(im, d, w, h, left_txt="arraste →"):
-    y = h - 170
-    d.line([(80, y), (w - 80, y)], fill=LINE, width=2)
-    x = 80
-    x += paste_h(im, LIGA, x, y + 42, 78) + 30
-    d.text((x, y + 81), "×", font=grotesk(46, "Regular"), fill=GRAY, anchor="lm")
-    x += 55
-    paste_h(im, DEC_W, x, y + 58, 46)
-    if left_txt:
-        d.text((w - 80, y + 81), left_txt, font=mono(26, True), fill=YELLOW, anchor="rm")
-
-
-def lines(d, x, y, parts, size, lh):
-    """parts: lista de linhas; cada linha é lista de (texto, cor)."""
-    f = grotesk(size)
-    for ln in parts:
-        cx = x
-        for t, c in ln:
-            d.text((cx, y), t, font=f, fill=c)
-            cx += d.textlength(t, font=f)
-        y += lh
-    return y
-
-
-W, H = 1080, 1350
-
-# ---------- SLIDE 1: teaser ----------
-im, d = base(W, H)
-yellow_block(d, W, "UNICAMP", "EM BREVE", bw=300)
-label(d, (80, 110), "LIGA EMPREENDEDORA APRESENTA")
-y = lines(d, 80, 330, [[("ALGO", WHITE)], [("GRANDE", WHITE)], [("ESTÁ", WHITE)], [("CHEGANDO", YELLOW)]], 150, 150)
-d.text((80, y + 60), "à Unicamp. E você vai querer estar lá.", font=grotesk(40, "Medium"), fill=WHITE)
-d.text((80, y + 120), "fique de olho nos próximos dias.", font=grotesk(30, "Regular"), fill=GRAY)
-footer(im, d, W, H)
-im.save(os.path.join(OUT, "post1_slide1_teaser.png"))
-
-# ---------- SLIDE 2: pistas ----------
-im, d = base(W, H)
-label(d, (80, 110), "PISTAS · 01 / 03")
-y = lines(d, 80, 200, [[("VOCÊ JÁ", WHITE)], [("SABE QUEM", WHITE)], [("VEM", YELLOW), ("?", WHITE)]], 128, 132)
-clues = [("01", "É uma startup financeira."), ("02", "Foi fundada por ex-executivos do Nubank."),
-         ("03", "Usa IA para cuidar de investimentos.")]
-y += 50
-for n, t in clues:
-    d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
-    d.text((80, y + 34), n, font=mono(30, True), fill=YELLOW)
-    d.text((170, y + 28), t, font=grotesk(38, "Medium"), fill=WHITE)
-    y += 118
-d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
-d.rectangle([80, y + 50, 80 + 560, y + 130], fill=YELLOW)
-d.text((110, y + 90), "comente seu palpite ↓", font=mono(30, True), fill=BLACK, anchor="lm")
-footer(im, d, W, H)
-im.save(os.path.join(OUT, "post1_slide2_pistas.png"))
-
-# ---------- SLIDE 3: revelação ----------
-im, d = base(W, H)
-photo = campus_photo((W, 640))
-im.paste(photo, (0, 0))
-fade = Image.new("L", (1, 640))
-for i in range(640):
-    fade.putpixel((0, i), int(255 * max(0, (i - 360) / 280)))
-im.paste(Image.new("RGB", (W, 640), BLACK), (0, 0), fade.resize((W, 640)))
-d = ImageDraw.Draw(im)
-d.rectangle([60, 64, 290, 124], fill=YELLOW)
-label(d, (80, 80), "REVELADO", color=BLACK)
-paste_h(im, DEC_W, 80, 610, 120)
-d.text((80, 800), "×", font=grotesk(90, "Light"), fill=YELLOW)
-paste_h(im, LIGA, 190, 770, 160)
-d.text((80, 1000), "A Decade chega à Unicamp", font=grotesk(52), fill=WHITE)
-d.text((80, 1062), "em parceria com a Liga Empreendedora.", font=grotesk(40, "Medium"), fill=YELLOW)
-label(d, (80, 1150), "EM BREVE · FIQUE DE OLHO", color=GRAY, size=24)
-d.line([(80, H - 110), (W - 80, H - 110)], fill=LINE, width=2)
-d.text((80, H - 60), "@liga_empreendedora", font=mono(24, True), fill=GRAY, anchor="lm")
-d.text((W - 80, H - 60), "ative as notificações", font=mono(24, True), fill=YELLOW, anchor="rm")
-im.save(os.path.join(OUT, "post1_slide3_revelacao.png"))
-
-# ---------- STORY ----------
-SW, SH = 1080, 1920
-im, d = base(SW, SH)
-yellow_block(d, SW, "UNICAMP", "EM BREVE", h=300, bw=320)
-label(d, (80, 380), "LIGA EMPREENDEDORA APRESENTA", size=24)
-y = lines(d, 80, 470, [[("ALGO", WHITE)], [("GRANDE", WHITE)], [("ESTÁ", WHITE)], [("CHEGANDO", YELLOW)]], 150, 150)
-d.text((80, y + 30), "Uma startup financeira vem aí.", font=grotesk(44, "Medium"), fill=WHITE)
-d.text((80, y + 92), "Quem você acha que é?", font=grotesk(44, "Medium"), fill=YELLOW)
-# espaço livre (y ≈ 1330–1500) para o sticker de enquete no app
-label(d, (80, 1290), "VOTE NA ENQUETE ↓", color=GRAY, size=22)
-y = SH - 400
-d.line([(80, y), (SW - 80, y)], fill=LINE, width=2)
-x = 80
-x += paste_h(im, LIGA, x, y + 55, 90) + 30
-d.text((x, y + 100), "×", font=grotesk(52, "Regular"), fill=GRAY, anchor="lm")
-paste_h(im, DEC_W, x + 60, y + 73, 54)
-im.save(os.path.join(OUT, "post1_story.png"))
-
-print("ok:", sorted(os.listdir(OUT)))
-
-
-
-# =====================================================================
-#  FASES 2 A 4  (cronograma do Gabriel)
-# =====================================================================
-import datetime as dt
-
-# >>> CONFIRMAR COM A DECADE E A LIGA antes de publicar <<<
-EVENTO = {
-    "data": dt.date(2026, 10, 26),  # assumida: fim do período de divulgação (26/10)
-    "local": "Unicamp · Campinas",
-}
-EV = EVENTO["data"]
-MESES = ["", "janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro",
-         "outubro", "novembro", "dezembro"]
-SEMANA = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"]
-DATA = f"{EV.day:02d}/{EV.month:02d}"
-DATA_EXT = f"{SEMANA[EV.weekday()]}, {EV.day} de {MESES[EV.month]}"
+def logo_w(logo, h):
+    return int(logo.width * h / logo.height)
 
 
 def save(im, name):
     im.save(os.path.join(OUT, name))
 
 
-def wrap(d, x, y, txt, font, fill, maxw, lh):
-    line = ""
-    for w in txt.split():
-        t = (line + " " + w).strip()
+# ---------- texto ----------
+def spaced(d, txt, y, font, fill, sp=12, w=W, x=None):
+    tw = sum(d.textlength(c, font=font) for c in txt) + sp * (len(txt) - 1)
+    cx = (w - tw) / 2 if x is None else x
+    for ch in txt:
+        d.text((cx, y), ch, font=font, fill=fill)
+        cx += d.textlength(ch, font=font) + sp
+
+
+def wrap_lines(d, txt, font, maxw):
+    out, line = [], ""
+    for word in txt.split():
+        t = (line + " " + word).strip()
         if d.textlength(t, font=font) <= maxw:
             line = t
         else:
-            d.text((x, y), line, font=font, fill=fill)
-            y += lh
-            line = w
+            out.append(line)
+            line = word
     if line:
-        d.text((x, y), line, font=font, fill=fill)
+        out.append(line)
+    return out
+
+
+def text_block(d, txt, y, font, fill, maxw, lh, w=W, x=None):
+    """Centralizado (x=None) ou alinhado à esquerda em x."""
+    for ln in wrap_lines(d, txt, font, maxw):
+        if x is None:
+            d.text((w / 2, y), ln, font=font, fill=fill, anchor="ma")
+        else:
+            d.text((x, y), ln, font=font, fill=fill)
         y += lh
     return y
 
 
-def title(d, x, y, parts, size, maxw=W - 160):
-    """Título em grotesca pesada; reduz o tamanho até todas as linhas caberem."""
-    while max(sum(d.textlength(t, font=grotesk(size)) for t, _ in ln) for ln in parts) > maxw:
+def cap_line(d, y, txt, font, fill, w=W, x=None):
+    """Desenha a linha com o topo das maiúsculas em y (independe da métrica da fonte). Retorna a base."""
+    caph = -d.textbbox((0, 0), "H", font=font, anchor="ls")[1]
+    base = y + caph
+    if x is None:
+        d.text((w / 2, base), txt, font=font, fill=fill, anchor="ms")
+    else:
+        d.text((x, base), txt, font=font, fill=fill, anchor="ls")
+    return base
+
+
+def fit(d, txt, make_font, maxw, start, minimum=20):
+    size = start
+    while size > minimum and d.textlength(txt, font=make_font(size)) > maxw:
+        size -= 2
+    return make_font(size)
+
+
+# =====================================================================
+#  ESTILO A · teaser off-white (401502) · Fase 1
+# =====================================================================
+def a_canvas(w=W, h=H):
+    im = Image.new("RGB", (w, h), D_OFF)
+    mask = decade_symbol_mask(int(w * 1.16), blur=4)
+    im.paste(Image.new("RGB", mask.size, D_WM), ((w - mask.width) // 2, int(h * 0.53 - mask.height / 2)), mask)
+    return im, ImageDraw.Draw(im)
+
+
+def a_symbol(im, cy, w=W, h=78):
+    m = decade_symbol_mask(h)
+    im.paste(Image.new("RGB", m.size, BLACK), ((w - m.width) // 2, int(cy - m.height / 2)), m)
+
+
+def a_title(d, y, parts, size, w=W, maxw=None):
+    maxw = maxw or w - 220
+    while max(d.textlength(t, font=serif(size, it)) for t, it in parts) > maxw:
         size -= 4
-    return lines(d, x, y, parts, size, size)
+    for t, it in parts:
+        d.text((w / 2, y), t, font=serif(size, it), fill=BLACK, anchor="ma")
+        y += int(size * 1.1)
+    return y + int(size * 0.15)
 
 
-def rows(d, y, items, tsize=36, bsize=28):
-    """Lista numerada com linhas finas, como as pistas do Post #1."""
+def a_body(d, y, txt, w=W, size=40):
+    return text_block(d, txt, y, serif(size), D_CINZA_MEDIO, w - 260, int(size * 1.35), w=w)
+
+
+def a_footer(im, d, w=W, cy=H - 118):
+    dh, lh, gap = 54, 74, 46
+    total = logo_w(DEC_BLACK, dh) + gap * 2 + 2 + logo_w(LIGA_BLACK, lh)
+    x = (w - total) / 2
+    x += paste_h(im, DEC_BLACK, x, cy - dh / 2, dh) + gap
+    d.line([(x, cy - 44), (x, cy + 44)], fill=D_CINZA_MEDIO, width=2)
+    paste_h(im, LIGA_BLACK, x + gap + 2, cy - lh / 2 - 4, lh)
+
+
+# =====================================================================
+#  ESTILO B · cartazes pretos (401499–401501) · Fases 2 a 4
+# =====================================================================
+MB = 100  # margem lateral (≈10% da largura, como nos cartazes)
+
+
+def b_canvas(w=W, h=H):
+    im = Image.new("RGB", (w, h), BLACK)
+    return im, ImageDraw.Draw(im)
+
+
+def b_head(d, y, lines_, w=W, gap=0.3):
+    """Linhas que ocupam a largura toda, como 'DECADE' / 'NA UNICAMP' nos cartazes.
+    lines_: (texto, cor, peso JetBrains, corpo máximo). Retorna o y abaixo da última linha."""
+    for txt, color, weight, maxsize in lines_:
+        f = fit(d, txt, lambda s: jb(s, weight), w - 2 * MB, maxsize)
+        if any(c in "ÁÉÍÓÚÂÊÔÃÕÀ" for c in txt):
+            y += int(f.size * 0.2)  # espaço para o acento das maiúsculas
+        base = cap_line(d, y, txt, f, color, w=w)
+        y = base + int(f.size * gap)
+    return y
+
+
+def b_sub(d, y, txt, w=W, size=40, color=BRANCO):
+    """Subtítulo em mono caixa alta ('A FINTECH QUE CAPTOU US$ 85 MILHÕES')."""
+    f = fit(d, txt, lambda s: jb(s, "Regular"), w - 2 * MB, size)
+    return cap_line(d, y, txt, f, color, w=w) + int(f.size * 0.3)
+
+
+def b_dash(d, y, color=AMARELO, w=W, dash=22, gapd=12, thick=5):
+    x = MB
+    while x < w - MB:
+        d.line([(x, y), (min(x + dash, w - MB), y)], fill=color, width=thick)
+        x += dash + gapd
+    return y
+
+
+def b_faixa(d, y, txt=FAIXA, w=W, size=78, color=BRANCO):
+    """'26.10 - 9h - Auditório' em Anton, entre tracejados."""
+    f = fit(d, txt, anton, w - 2 * MB, size)
+    return cap_line(d, y, txt, f, color, w=w)
+
+
+def b_body(d, y, txt, w=W, size=30, color=BRANCO, x=None):
+    f = jb(size, "Regular")
+    maxw = w - 2 * MB
+    return text_block(d, txt, y, f, color, maxw, int(size * 1.45), w=w, x=x)
+
+
+def b_cta(d, y, txt="INSCREVA-SE!", w=W, size=64):
+    return cap_line(d, y, txt, anton(size), AMARELO, w=w)
+
+
+def b_counter(d, txt, y, w=W):
+    spaced(d, txt, y, jb(22, "Bold"), CINZA, sp=6, w=w)
+
+
+def b_footer(im, w=W, y=H - 175, lh=110, dh=66):
+    """Rodapé dos cartazes: Liga à esquerda, Decade à direita."""
+    paste_h(im, LIGA_DARK, MB, y, lh)
+    paste_h(im, DEC_OFF, w - MB - logo_w(DEC_OFF, dh), y + (lh - dh) / 2 - 4, dh)
+
+
+def b_rows(d, y, items, w=W, tsize=36, bsize=26):
+    """Lista numerada: número em Anton amarelo, item em Montserrat Bold, detalhe em mono cinza,
+    separados por tracejado cinza (como o 401501)."""
     for n, t, b in items:
-        d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
-        d.text((80, y + 30), n, font=mono(28, True), fill=YELLOW)
-        d.text((170, y + 24), t, font=grotesk(tsize), fill=WHITE)
-        y2 = y + 24 + tsize + 12
+        b_dash(d, y, CINZA, w=w, thick=3)
+        cap_line(d, y + 34, n, anton(46), AMARELO, x=MB, w=w)
+        y2 = cap_line(d, y + 36, t, mont(tsize), BRANCO, x=MB + 100, w=w) + 16
         if b:
-            y2 = wrap(d, 170, y2, b, grotesk(bsize, "Regular"), GRAY, W - 250, bsize + 10)
-        y = y2 + 24
-    d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
+            y2 = text_block(d, b, y2, jb(bsize), CINZA_TXT, w - 2 * MB - 100, int(bsize * 1.45), w=w, x=MB + 100) - int(bsize * 0.4)
+        y = y2 + 30
+    b_dash(d, y, CINZA, w=w, thick=3)
     return y
 
 
-def info_rows(d, y, items, vx=330):
-    """Tabela chave/valor (O QUÊ, QUANDO, ONDE...)."""
-    for k, v in items:
-        d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
-        d.text((80, y + 34), k, font=mono(26, True), fill=YELLOW)
-        y = wrap(d, vx, y + 28, v, grotesk(36, "Medium"), WHITE, W - 80 - vx, 46) + 26
-    d.line([(80, y), (W - 80, y)], fill=LINE, width=2)
-    return y
+# =====================================================================
+#  POST 1 · 29/09 · Fase 1 (aquecimento) · carrossel · estilo A (teaser 401502)
+# =====================================================================
+im, d = a_canvas()
+spaced(d, f"UNICAMP · {MES_UP}", 92, smono(26), D_GRAFITE, sp=13)
+a_symbol(im, 390)
+y = a_title(d, 490, [("algo está sendo", False), ("construído.", True)], 124)
+y = a_body(d, y + 50, "as inscrições abrem em breve. entre na nossa comunidade no WhatsApp e saiba antes de todo mundo.")
+spaced(d, f"{DATA} · UNICAMP", y + 40, smono(34), BLACK, sp=10)
+spaced(d, "01 / 03 · ARRASTE →", H - 238, smono(22), D_CINZA_MEDIO, sp=8)
+a_footer(im, d)
+save(im, "post1_slide1_teaser.png")
+
+im, d = a_canvas()
+spaced(d, f"UNICAMP · {MES_UP}", 92, smono(26), D_GRAFITE, sp=13)
+y = a_title(d, 200, [("você já sabe", False), ("quem vem?", True)], 118)
+for n, t in (("01", "Uma fintech de inteligência patrimonial."), ("02", "Fundada por ex-Nubank e Hyperplane."),
+             ("03", "Fez a maior rodada seed da América Latina.")):
+    d.line([(110, y), (W - 110, y)], fill=D_HAIR, width=2)
+    d.text((130, y + 34), n, font=smono(26), fill=D_GRAFITE)
+    d.text((220, y + 24), t, font=serif(38), fill=BLACK)
+    y += 100
+d.line([(110, y), (W - 110, y)], fill=D_HAIR, width=2)
+d.text((W / 2, y + 70), "comente seu palpite ↓", font=serif(44, True), fill=BLACK, anchor="ma")
+spaced(d, "02 / 03 · ARRASTE →", H - 238, smono(22), D_CINZA_MEDIO, sp=8)
+a_footer(im, d)
+save(im, "post1_slide2_pistas.png")
+
+im = Image.new("RGB", (W, H), D_OFF)
+im.paste(campus_photo((W, 620)), (0, 0))
+d = ImageDraw.Draw(im)
+spaced(d, "REVELADO", 700, smono(24), D_GRAFITE, sp=13)
+y = a_title(d, 760, [("a Decade chega", False), ("à Unicamp.", True)], 96)
+spaced(d, "COM A LIGA EMPREENDEDORA · " + MES_UP, y + 45, smono(22), D_CINZA_MEDIO, sp=8)
+spaced(d, "03 / 03 · ATIVE AS NOTIFICAÇÕES", H - 238, smono(22), D_CINZA_MEDIO, sp=8)
+a_footer(im, d)
+save(im, "post1_slide3_revelacao.png")
+
+# Story da fase 1, mesmo estilo (faixa livre para o sticker de enquete)
+im, d = a_canvas(SW, SH)
+spaced(d, f"UNICAMP · {MES_UP}", 260, smono(28), D_GRAFITE, sp=13, w=SW)
+a_symbol(im, 480, w=SW, h=90)
+y = a_title(d, 600, [("algo grande", False), ("está chegando.", True)], 124, w=SW)
+y = a_body(d, y + 40, "uma fintech vem aí.", w=SW, size=44)
+y = a_body(d, y, "quem você acha que é?", w=SW, size=44)
+spaced(d, "VOTE NA ENQUETE ↓", y + 60, smono(24), D_CINZA_MEDIO, sp=8, w=SW)
+a_footer(im, d, w=SW, cy=SH - 330)
+save(im, "post1_story.png")
 
 
-def button(d, x, y, txt):
-    f = mono(30, True)
-    d.rectangle([x, y, x + d.textlength(txt, font=f) + 60, y + 80], fill=YELLOW)
-    d.text((x + 30, y + 40), txt, font=f, fill=BLACK, anchor="lm")
+# =====================================================================
+#  FASES 2 A 4 · estilo B (cartazes 401499–401501)
+# =====================================================================
+HEAD = [("DECADE", AMARELO, "ExtraBold", 330), ("NA UNICAMP", BRANCO, "Regular", 150)]
+HEAD_SM = [("DECADE", AMARELO, "ExtraBold", 230), ("NA UNICAMP", BRANCO, "Regular", 110)]
+SUB = "A FINTECH QUE CAPTOU US$ 85 MILHÕES"
+TEXTO_EVENTO = ("Conheça a 1ª Inteligência Patrimonial do mercado. Descubra como a Decade une expertise "
+                "humana à IA e participe de um networking exclusivo com os fundadores (ex-Nubank e Hyperplane).")
 
 
-def story_footer(im, d):
-    y = SH - 400
-    d.line([(80, y), (SW - 80, y)], fill=LINE, width=2)
-    x = 80 + paste_h(im, LIGA, 80, y + 55, 90) + 30
-    d.text((x, y + 100), "×", font=grotesk(52, "Regular"), fill=GRAY, anchor="lm")
-    paste_h(im, DEC_W, x + 60, y + 73, 54)
+def b_story_base(rotulo):
+    im, d = b_canvas(SW, SH)
+    spaced(d, rotulo, 250, jb(28, "Bold"), AMARELO, sp=8, w=SW)
+    return im, d
 
 
-def story(name, rotulo, titulo, sub, dica, bloco):
-    """Story padrão: bloco amarelo, título, texto e faixa livre para o sticker (y ≈ 1330–1500)."""
-    im, d = base(SW, SH)
-    yellow_block(d, SW, bloco[0], bloco[1], h=300, bw=320)
-    label(d, (80, 380), rotulo, size=24)
-    y = title(d, 80, 470, titulo, 140)
-    y = wrap(d, 80, y + 40, sub, grotesk(42, "Medium"), WHITE, SW - 160, 56)
-    label(d, (80, max(y + 50, 1270)), dica, color=GRAY, size=22)
-    story_footer(im, d)
-    save(im, name)
+def b_story_footer(im):
+    b_footer(im, w=SW, y=SH - 400)
 
 
 # ---------- POST 2 · 04/10 · Lançamento: conheça a Decade (carrossel) ----------
-im, d = base(W, H)
-yellow_block(d, W, "UNICAMP", "REVELADO", bw=300)
-label(d, (80, 110), "O SEGREDO FOI REVELADO")
-y = title(d, 80, 330, [[("CONHEÇA", WHITE)], [("A ", WHITE), ("DECADE", YELLOW)]], 150)
-wrap(d, 80, y + 60, "A startup financeira que vem à Unicamp com a Liga Empreendedora.",
-     grotesk(40, "Medium"), WHITE, W - 160, 54)
-footer(im, d, W, H)
+im, d = b_canvas()
+y = b_head(d, 250, HEAD)
+y = b_sub(d, y + 20, SUB)
+b_dash(d, y + 40)
+y = b_body(d, y + 90, "A startup que fez a maior rodada seed da América Latina vem à Unicamp com a Liga Empreendedora.", size=32)
+b_dash(d, y + 40)
+b_counter(d, "01 / 03 · ARRASTE →", H - 262)
+b_footer(im)
 save(im, "post2_slide1_conheca.png")
 
-im, d = base(W, H)
-label(d, (80, 110), "QUEM É A DECADE · 02 / 03")
-y = title(d, 80, 200, [[("O QUE É A", WHITE)], [("DECADE", YELLOW), ("?", WHITE)]], 128)
-rows(d, y + 50, [("01", "Gestão de patrimônio com IA", "Tecnologia para cuidar dos investimentos de forma completa e personalizada."),
-                 ("02", "Time de peso", "Fundada por ex-executivos do Nubank."),
-                 ("03", "Mais acesso", "Leva um serviço antes restrito a grandes fortunas para mais pessoas.")])
-footer(im, d, W, H)
+im, d = b_canvas()
+y = b_head(d, 110, [("O QUE É A", BRANCO, "Regular", 120), ("DECADE?", AMARELO, "ExtraBold", 230)])
+b_rows(d, y + 30, [("01", "Inteligência patrimonial", "Expertise humana + IA para as maiores decisões financeiras da sua vida."),
+                   ("02", "Time de peso", "Fundadores vindos do Nubank e da Hyperplane."),
+                   ("03", "US$ 85 milhões", "A maior rodada seed da história da América Latina.")])
+b_counter(d, "02 / 03 · ARRASTE →", H - 262)
+b_footer(im)
 save(im, "post2_slide2_o_que_e.png")
 
-im, d = base(W, H)
-label(d, (80, 110), "03 / 03")
-y = title(d, 80, 230, [[("E ELA VEM", WHITE)], [("ATÉ VOCÊ", YELLOW)]], 140)
-y = wrap(d, 80, y + 50, "O encontro Decade × Liga Empreendedora acontece na Unicamp. No próximo post: data, local e inscrições.",
-         grotesk(40, "Medium"), WHITE, W - 160, 54)
-x = 80 + paste_h(im, DEC_W, 80, y + 90, 90) + 40
-d.text((x, y + 135), "×", font=grotesk(80, "Light"), fill=YELLOW, anchor="lm")
-paste_h(im, LIGA, x + 80, y + 60, 150)
-button(d, 80, y + 280, "ative as notificações")
-footer(im, d, W, H, left_txt=None)
+im, d = b_canvas()
+y = b_head(d, 190, [("E ELA VEM", BRANCO, "Regular", 150), ("ATÉ VOCÊ", AMARELO, "ExtraBold", 260)])
+b_dash(d, y + 30)
+y = b_body(d, y + 80, "O encontro Decade × Liga Empreendedora acontece na Unicamp. No próximo post: data, local e inscrições.", size=32)
+b_dash(d, y + 40)
+b_cta(d, y + 100, "ATIVE AS NOTIFICAÇÕES", size=60)
+b_counter(d, "03 / 03", H - 262)
+b_footer(im)
 save(im, "post2_slide3_ate_voce.png")
 
-story("post2_story.png", "CONHEÇA A DECADE", [[("STARTUP", WHITE)], [("FINANCEIRA", WHITE)], [("COM IA", YELLOW)]],
-      "Fundada por ex-executivos do Nubank, a Decade vem à Unicamp com a Liga Empreendedora.",
-      "MANDE SUA PERGUNTA PARA A DECADE ↓", ("UNICAMP", "REVELADO"))
+im, d = b_story_base("CONHEÇA A DECADE")
+y = b_head(d, 420, HEAD, w=SW)
+y = b_sub(d, y + 20, SUB, w=SW)
+b_dash(d, y + 40, w=SW)
+y = b_body(d, y + 90, "Fundada por ex-Nubank e Hyperplane. O que você quer perguntar aos fundadores?", w=SW, size=34)
+b_counter(d, "MANDE SUA PERGUNTA NA CAIXINHA ↓", y + 50, w=SW)
+b_story_footer(im)
+save(im, "post2_story.png")
 
-# ---------- POST 3 · 08/10 · Lançamento: o evento + inscrições (estático) ----------
-im, d = base(W, H)
-yellow_block(d, W, "INSCRIÇÕES", "ABERTAS", bw=330)
-label(d, (80, 110), "DECADE × LIGA EMPREENDEDORA")
-y = title(d, 80, 290, [[("DECADE", WHITE)], [("NA ", WHITE), ("UNICAMP", YELLOW)]], 130, maxw=W - 160)
-y = info_rows(d, y + 40, [("O QUÊ", "Encontro com o time da Decade sobre finanças, IA e empreendedorismo."),
-                          ("QUANDO", DATA_EXT[0].upper() + DATA_EXT[1:]),
-                          ("ONDE", EVENTO["local"]),
-                          ("PARA QUEM", "Estudantes de todos os cursos.")])
-button(d, 80, y + 40, "inscreva-se: link na bio")
-footer(im, d, W, H, left_txt=None)
+# ---------- POST 3 · 08/10 · Lançamento: o evento (estático, recriação do 401500) ----------
+im, d = b_canvas()
+y = b_head(d, 110, HEAD_SM)
+y = b_sub(d, y + 10, SUB, size=34)
+b_dash(d, y + 20)
+y = b_faixa(d, y + 56, size=70)
+b_dash(d, y + 34)
+y = b_body(d, y + 70, TEXTO_EVENTO, size=24, x=MB)
+y = b_cta(d, y + 26, size=54)
+qs = 230
+im.paste(QR.resize((qs, qs), Image.LANCZOS), ((W - qs) // 2, y + 26))
+b_footer(im, y=H - 150, lh=96, dh=56)
 save(im, "post3_evento.png")
 
-story("post3_story.png", "INSCRIÇÕES ABERTAS", [[("GARANTA", WHITE)], [("SUA VAGA", YELLOW)]],
-      f"Decade × Liga Empreendedora · {DATA_EXT} · {EVENTO['local']}. Aberto a todos os cursos.",
-      "TOQUE NO LINK PARA SE INSCREVER ↓", ("INSCRIÇÕES", "ABERTAS"))
+im, d = b_story_base("INSCRIÇÕES ABERTAS")
+y = b_head(d, 400, HEAD, w=SW)
+y = b_sub(d, y + 20, SUB, w=SW)
+b_dash(d, y + 40, w=SW)
+y = b_faixa(d, y + 80, w=SW)
+b_dash(d, y + 44, w=SW)
+y = b_cta(d, y + 110, w=SW, size=90)
+b_counter(d, "TOQUE NO LINK PARA SE INSCREVER ↓", y + 60, w=SW)
+b_story_footer(im)
+save(im, "post3_story.png")
 
 # ---------- POST 4 · 12/10 · Motivação: por que ir (carrossel) ----------
-im, d = base(W, H)
-yellow_block(d, W, "UNICAMP", DATA, bw=300)
-label(d, (80, 110), "POR QUE IR?")
-title(d, 80, 330, [[("4 MOTIVOS", WHITE)], [("PARA NÃO", WHITE)], [("FICAR", WHITE)], [("DE FORA", YELLOW)]], 140)
-footer(im, d, W, H)
+im, d = b_canvas()
+y = b_faixa(d, 110, size=70)
+b_dash(d, y + 40, CINZA)
+y = b_head(d, y + 110, [("4 MOTIVOS", AMARELO, "ExtraBold", 230), ("PARA NÃO FICAR", BRANCO, "Regular", 120),
+                        ("DE FORA", BRANCO, "Regular", 120)])
+b_dash(d, y + 30, CINZA)
+y = b_body(d, y + 90, "Bastidores de uma fintech, IA aplicada a finanças, networking com os fundadores e novos caminhos de carreira.", size=32)
+b_cta(d, y + 60, "ARRASTE E CONFIRA →", size=60)
+b_counter(d, "01 / 02", H - 262)
+b_footer(im)
 save(im, "post4_slide1_motivos.png")
 
-im, d = base(W, H)
-label(d, (80, 110), "POR QUE IR? · 02 / 02")
-y = title(d, 80, 200, [[("POR QUE ", WHITE), ("IR", YELLOW), ("?", WHITE)]], 110)
-rows(d, y + 40, [("01", "Bastidores de uma fintech", "Como se constrói uma startup financeira do zero."),
-                 ("02", "IA aplicada a finanças", "Como a tecnologia está mudando o jeito de investir."),
-                 ("03", "Conexões", "Converse com o time da Decade e com a rede da Liga."),
-                 ("04", "Carreira", "Caminhos em finanças, tecnologia e empreendedorismo.")])
-footer(im, d, W, H, left_txt="inscrições: link na bio")
+im, d = b_canvas()
+y = b_head(d, 110, [("POR QUE", BRANCO, "Regular", 120), ("IR?", AMARELO, "ExtraBold", 200)])
+b_rows(d, y + 20, [("01", "Bastidores de uma fintech", "Como se constrói uma startup financeira do zero."),
+                   ("02", "IA aplicada a finanças", "Como a tecnologia está mudando o jeito de investir."),
+                   ("03", "Conexões", "Networking com os fundadores e com a rede da Liga."),
+                   ("04", "Carreira", "Caminhos em finanças, tecnologia e empreendedorismo.")], tsize=34, bsize=24)
+b_counter(d, "02 / 02 · INSCRIÇÕES: LINK NA BIO", H - 262)
+b_footer(im)
 save(im, "post4_slide2_por_que.png")
 
-story("post4_story.png", "POR QUE IR?", [[("BASTIDORES", WHITE)], [("DE UMA", WHITE)], [("FINTECH", YELLOW)]],
-      "Veja como se constrói uma startup financeira e converse com quem está fazendo isso.",
-      "VOCÊ JÁ INVESTE? RESPONDA NA ENQUETE ↓", ("UNICAMP", DATA))
+im, d = b_story_base("POR QUE IR?")
+y = b_head(d, 420, [("BASTIDORES", BRANCO, "Regular", 170), ("DE UMA", BRANCO, "Regular", 170),
+                    ("FINTECH", AMARELO, "ExtraBold", 300)], w=SW)
+b_dash(d, y + 30, w=SW)
+y = b_body(d, y + 80, "Veja como se constrói uma startup financeira e converse com quem está fazendo isso.", w=SW, size=34)
+b_counter(d, "VOCÊ JÁ INVESTE? RESPONDA NA ENQUETE ↓", y + 50, w=SW)
+b_story_footer(im)
+save(im, "post4_story.png")
 
 # ---------- POST 5 · 16/10 · Motivação: para quem é + autoridade (carrossel) ----------
-im, d = base(W, H)
-label(d, (80, 110), "PARA QUEM É? · 01 / 02")
-y = title(d, 80, 200, [[("É PRA", WHITE)], [("VOCÊ QUE", YELLOW), ("...", WHITE)]], 128)
-rows(d, y + 40, [("01", "estuda Economia ou Administração", "e quer ver o mercado financeiro por dentro."),
-                 ("02", "estuda Computação ou Engenharia", "e quer entender IA aplicada a produtos reais."),
-                 ("03", "pensa em empreender", "e quer aprender com quem fundou uma startup."),
-                 ("04", "é de qualquer curso", "e tem curiosidade por finanças e tecnologia.")])
-footer(im, d, W, H)
+im, d = b_canvas()
+y = b_head(d, 110, [("É PARA", BRANCO, "Regular", 120), ("VOCÊ QUE...", AMARELO, "ExtraBold", 200)])
+b_rows(d, y + 20, [("01", "estuda Economia ou Administração", "e quer ver o mercado financeiro por dentro."),
+                   ("02", "estuda Computação ou Engenharia", "e quer entender IA aplicada a produtos reais."),
+                   ("03", "pensa em empreender", "e quer aprender com quem fundou uma startup."),
+                   ("04", "é de qualquer curso", "e tem curiosidade por finanças e tecnologia.")], tsize=32, bsize=24)
+b_counter(d, "01 / 02 · ARRASTE →", H - 262)
+b_footer(im)
 save(im, "post5_slide1_para_quem.png")
 
-im, d = base(W, H)
-yellow_block(d, W, "UNICAMP", DATA, bw=300)
-label(d, (80, 110), "QUEM ESTÁ POR TRÁS")
-y = title(d, 80, 330, [[("FUNDADA", WHITE)], [("POR", WHITE)], [("EX-NUBANK", YELLOW)]], 150)
-y = wrap(d, 80, y + 50, "A Decade foi criada por ex-executivos do Nubank e chega à Unicamp com a Liga Empreendedora.",
-         grotesk(40, "Medium"), WHITE, W - 160, 54)
-button(d, 80, y + 50, "inscrições: link na bio")
-footer(im, d, W, H, left_txt=None)
+im, d = b_canvas()
+y = b_head(d, 190, [("FUNDADA POR", BRANCO, "Regular", 150), ("EX-NUBANK", AMARELO, "ExtraBold", 260)])
+y = b_sub(d, y + 20, "E EX-HYPERPLANE")
+b_dash(d, y + 40)
+y = b_body(d, y + 90, "Os fundadores da Decade chegam à Unicamp com a Liga Empreendedora para um networking exclusivo.", size=32)
+b_dash(d, y + 40)
+b_cta(d, y + 100)
+b_counter(d, "02 / 02 · LINK NA BIO", H - 262)
+b_footer(im)
 save(im, "post5_slide2_ex_nubank.png")
 
-story("post5_story.png", "PARA QUEM É?", [[("QUAL O", WHITE)], [("SEU CURSO", YELLOW), ("?", WHITE)]],
-      "O evento é aberto a estudantes de todos os cursos da Unicamp.",
-      "RESPONDA NA CAIXINHA ↓", ("UNICAMP", DATA))
+im, d = b_story_base("PARA QUEM É?")
+y = b_head(d, 420, [("QUAL O", BRANCO, "Regular", 200), ("SEU CURSO?", AMARELO, "ExtraBold", 300)], w=SW)
+b_dash(d, y + 30, w=SW)
+y = b_body(d, y + 80, "O evento é aberto a estudantes de todos os cursos da Unicamp.", w=SW, size=34)
+b_counter(d, "RESPONDA NA CAIXINHA ↓", y + 50, w=SW)
+b_story_footer(im)
+save(im, "post5_story.png")
 
 
-# ---------- POSTS 6 A 8 · Lembretes (estáticos) ----------
-def countdown(d, top, dias, width, big=540, after_gap=40):
-    """'FALTAM / N / DIAS' ou 'É AMANHÃ' / 'É HOJE'. Retorna o y final."""
+# ---------- POSTS 6 A 8 · Lembretes (estáticos) + stories ----------
+def lembrete(w, h, dias, top, big, footer_y, name, dica=None, sub=None):
+    im, d = b_canvas(w, h)
+    y = b_faixa(d, top, w=w, size=70)
+    b_dash(d, y + 40, CINZA, w=w)
     if dias > 1:
-        d.text((80, top), "FALTAM", font=grotesk(110), fill=WHITE)
-        base_y = top + 150 + int(big * 0.74)
-        d.text((62, base_y), str(dias), font=grotesk(big), fill=YELLOW, anchor="ls")
-        d.text((80, base_y + 30), "DIAS", font=grotesk(140), fill=WHITE)
-        return base_y + 30 + 140 + after_gap
-    palavra = "AMANHÃ" if dias == 1 else "HOJE"
-    return title(d, 80, top, [[("É", WHITE)], [(palavra, YELLOW)]], 240, maxw=width - 160) + after_gap
+        y = b_head(d, y + 100, [("FALTAM", BRANCO, "Regular", big // 3), (str(dias), AMARELO, "ExtraBold", big),
+                                ("DIAS", BRANCO, "Regular", big // 3)], w=w, gap=0.2)
+    else:
+        y = b_head(d, y + 100, [("É", BRANCO, "Regular", int(big * 0.55)),
+                                ("AMANHÃ" if dias == 1 else "HOJE", AMARELO, "ExtraBold", big)], w=w, gap=0.2)
+    b_dash(d, y + 20, CINZA, w=w)
+    if sub:
+        y = b_body(d, y + 70, sub, w=w, size=32)
+    if dica:
+        b_counter(d, dica, y + 60, w=w)
+    else:
+        b_cta(d, y + 70, w=w, size=60)
+    b_footer(im, w=w, y=footer_y)
+    save(im, name)
 
 
 for n, data_post in ((6, dt.date(2026, 10, 20)), (7, dt.date(2026, 10, 23)), (8, dt.date(2026, 10, 25))):
     dias = (EV - data_post).days
     tag = f"faltam_{dias}_dias" if dias > 1 else "e_amanha"
-    sub = ("para o encontro com a Decade na Unicamp." if dias > 1
-           else f"{DATA_EXT[0].upper() + DATA_EXT[1:]}, {EVENTO['local']}. Ainda dá tempo de se inscrever.")
-    im, d = base(W, H)
-    yellow_block(d, W, "DECADE × LIGA", DATA, bw=300)
-    label(d, (80, 110), "LEMBRETE")
-    y = countdown(d, 290, dias, W, big=500)
-    wrap(d, 80, y, sub, grotesk(38, "Medium"), WHITE, W - 160, 50)
-    footer(im, d, W, H, left_txt="inscrições: link na bio")
-    save(im, f"post{n}_{tag}.png")
+    lembrete(W, H, dias, 110, 420 if dias > 1 else 250, H - 175, f"post{n}_{tag}.png",
+             sub=None if dias > 1 else f"{DATA_EXT[0].upper() + DATA_EXT[1:]}, na Unicamp. Últimas vagas no link da bio.")
+    lembrete(SW, SH, dias, 250, 560 if dias > 1 else 300, SH - 400, f"post{n}_story.png",
+             dica="ADICIONE O LEMBRETE NO STICKER ↓")
 
-    im, d = base(SW, SH)
-    yellow_block(d, SW, "DECADE × LIGA", DATA, h=300, bw=320)
-    label(d, (80, 380), "LEMBRETE", size=24)
-    y = countdown(d, 470, dias, SW, big=480)
-    label(d, (80, max(y + 20, 1270)), "ADICIONE O LEMBRETE NO STICKER ↓", color=GRAY, size=22)
-    story_footer(im, d)
-    save(im, f"post{n}_story.png")
-
-# ---------- EXTRA · 26/10 · Story "É HOJE" (sugestão do Octavio) ----------
-im, d = base(SW, SH)
-yellow_block(d, SW, "DECADE × LIGA", DATA, h=300, bw=320)
-label(d, (80, 380), "É HOJE", size=24)
-y = countdown(d, 470, 0, SW)
-wrap(d, 80, y, f"Te esperamos na {EVENTO['local'].split(' ·')[0]}. Nos vemos lá!", grotesk(42, "Medium"), WHITE, SW - 160, 56)
-label(d, (80, 1270), "MARQUE QUEM VAI COM VOCÊ ↓", color=GRAY, size=22)
-story_footer(im, d)
-save(im, "extra_story_e_hoje.png")
+# EXTRA · 26/10 · story "É HOJE" (sugestão do Octávio)
+lembrete(SW, SH, 0, 250, 320, SH - 400, "extra_story_e_hoje.png",
+         sub=f"Te esperamos no {EVENTO['local']} da Unicamp. Nos vemos lá!", dica="MARQUE QUEM VAI COM VOCÊ ↓")
 
 print("total:", len(os.listdir(OUT)), "peças")
